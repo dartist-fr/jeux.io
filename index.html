@@ -1,9 +1,649 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Mon premier site</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#14170f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Undercover">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Undercover — Dossier confidentiel</title>
+<style>
+  :root{
+    --bg:#14170f; --panel:#1c2016; --panel-alt:#23281a;
+    --ink:#ede7d3; --ink2:#ded6bd; --dim:#9aa084; --faint:#5f6650;
+    --border:#3a4028; --red:#a3231f; --olive:#55631f;
+  }
+  :root[data-theme="light"]{
+    --bg:#ede7d3; --panel:#e2dab9; --panel-alt:#d7cda3;
+    --ink:#1c2016; --ink2:#2b2f1e; --dim:#5c6047; --faint:#83805f;
+    --border:#c3b98f; --red:#a3231f; --olive:#4a5719;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    height:100%;transition:background 0.15s,color 0.15s;}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
+  .display{font-family:'Courier New',Courier,monospace;letter-spacing:0.04em;}
+  #app{max-width:520px;margin:0 auto;padding:16px;min-height:100vh;}
+  header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--border);}
+  h1{font-size:22px;margin:0;color:var(--ink);}
+  .subtitle{font-size:11px;color:var(--dim);font-family:'Courier New',monospace;margin-top:2px;letter-spacing:0.05em;}
+  .iconbtn{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:4px;}
+  .iconbtn:active{color:var(--ink);}
+  .headerbtns{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .themebtn{display:flex;align-items:center;gap:5px;background:none;border:1px solid var(--border);
+    color:var(--dim);font-size:11px;cursor:pointer;padding:5px 9px;border-radius:6px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:0.04em;}
+  .themebtn:active{background:var(--panel-alt);}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;}
+  .panel h2{font-size:13px;letter-spacing:0.08em;color:var(--ink2);margin:0 0 12px;font-family:'Courier New',monospace;text-transform:uppercase;}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;}
+  .row span.label{font-size:14px;color:var(--dim);}
+  .stepper{display:flex;align-items:center;gap:12px;}
+  .stepper button{width:32px;height:32px;background:var(--bg);border:1px solid var(--border);color:var(--ink2);border-radius:6px;font-size:16px;cursor:pointer;}
+  .stepper button:active{background:var(--panel-alt);}
+  .stepper .val{width:22px;text-align:center;font-family:'Courier New',monospace;}
+  input[type=text],select{
+    width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
+    color:var(--ink);padding:10px 12px;font-size:15px;outline:none;
+  }
+  input[type=text]::placeholder{color:var(--faint);}
+  input[type=text]:focus,select:focus{border-color:var(--olive);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 18px;font-size:14px;font-weight:600;letter-spacing:0.04em;
+    text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;border:2px solid var(--border);}
+  .btn-primary{background:var(--olive);border-color:#3a4028;color:#ede7d3;}
+  .btn-primary:active{opacity:0.85;}
+  .btn-primary:disabled{opacity:0.3;pointer-events:none;}
+  .btn-ghost{background:none;border:1px solid var(--border);color:var(--ink2);}
+  .btn-ghost:active{background:var(--panel-alt);}
+  .btn-small{width:auto;padding:9px 14px;font-size:12px;}
+  .linkbtn{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;text-decoration:underline;display:block;margin:0 auto;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+  .chip{display:flex;align-items:center;gap:6px;background:var(--panel-alt);border:1px solid var(--border);
+    border-radius:6px;padding:6px 10px;font-size:14px;}
+  .chip button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:0;}
+  .inline2{display:flex;gap:8px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .fieldlabel{font-size:11px;color:var(--dim);display:block;margin-bottom:4px;}
+  .center{text-align:center;}
+  .py-lg{padding:44px 18px;}
+  .stamp{display:inline-block;border:3px solid var(--red);color:var(--red);
+    padding:10px 22px;border-radius:6px;font-size:20px;text-transform:uppercase;
+    transform:rotate(-3deg);font-family:'Courier New',monospace;font-weight:bold;}
+  .stamp.olive{border-color:var(--olive);color:var(--olive);}
+  .stamp.sm{font-size:12px;padding:5px 12px;border-width:2px;}
+  .stamp.md{font-size:14px;padding:7px 15px;border-width:2px;}
+  .redacted{display:flex;gap:4px;justify-content:center;margin:18px 0;}
+  .redacted div{height:8px;background:var(--bg);width:26px;}
+  .wordbig{font-size:30px;color:var(--ink);font-family:'Courier New',monospace;margin-top:6px;}
+  .dim{color:var(--dim);}
+  .faint{color:var(--faint);}
+  .mono{font-family:'Courier New',monospace;}
+  .mt6{margin-top:6px;}.mt10{margin-top:10px;}.mt16{margin-top:16px;}.mt24{margin-top:24px;}.mb10{margin-bottom:10px;}
+  .voteitem{width:100%;display:flex;align-items:center;justify-content:space-between;
+    padding:13px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--ink);
+    font-size:15px;text-align:left;cursor:pointer;margin-bottom:8px;}
+  .voteitem.selected{border-color:var(--red);background:var(--panel-alt);}
+  .clueChip{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);color:var(--dim);}
+  .clueChip.current{border-color:var(--olive);color:var(--ink);}
+  .clueChip.done{color:var(--faint);}
+  .flexwrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+  .split{display:flex;justify-content:space-around;text-align:center;}
+  .split .num{font-size:22px;}
+  .listrow{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:5px 0;}
+  .strike{color:var(--faint);text-decoration:line-through;}
+  .histrow{border-bottom:1px solid var(--panel-alt);padding-bottom:8px;margin-bottom:8px;}
+  .histrow:last-child{border-bottom:none;}
+  .warn{color:#e0827f;font-size:12px;margin-top:8px;}
+  .toprow{display:flex;justify-content:space-between;align-items:center;}
+  .libraryrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--panel-alt);}
+  .libraryrow:last-child{border-bottom:none;}
+  .libwords{font-size:14px;flex:1;min-width:0;}
+  .libcontrols{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .libSelect{width:auto;min-width:110px;padding:6px 8px;font-size:12px;}
+  .libcontrols button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;padding:2px;}
+  .libcontrols button:active{color:var(--red);}
+</style>
 </head>
 <body>
-    <h1>Bienvenue sur mon site gratuit et sans pub !</h1>
+<div id="app"></div>
+<script>
+
+var BUILTIN_PAIRS = [
+  { theme:"Nourriture", difficulty:"facile", civil:"Pizza", undercover:"Burger" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Chocolat", undercover:"Bonbon" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Croissant", undercover:"Baguette" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Fromage", undercover:"Yaourt" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Tarte", undercover:"Quiche" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Crêpe", undercover:"Gaufre" },
+  { theme:"Animaux", difficulty:"facile", civil:"Chien", undercover:"Chat" },
+  { theme:"Animaux", difficulty:"facile", civil:"Lion", undercover:"Tigre" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Aigle", undercover:"Faucon" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Dauphin", undercover:"Requin" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Corbeau", undercover:"Corneille" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Alpaga", undercover:"Lama" },
+  { theme:"Sport", difficulty:"facile", civil:"Football", undercover:"Basketball" },
+  { theme:"Sport", difficulty:"facile", civil:"Natation", undercover:"Plongée" },
+  { theme:"Sport", difficulty:"moyen", civil:"Tennis", undercover:"Badminton" },
+  { theme:"Sport", difficulty:"moyen", civil:"Rugby", undercover:"Football américain" },
+  { theme:"Sport", difficulty:"difficile", civil:"Escalade", undercover:"Alpinisme" },
+  { theme:"Sport", difficulty:"difficile", civil:"Judo", undercover:"Karaté" },
+  { theme:"Métiers", difficulty:"facile", civil:"Médecin", undercover:"Infirmier" },
+  { theme:"Métiers", difficulty:"facile", civil:"Professeur", undercover:"Journaliste" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Boulanger", undercover:"Pâtissier" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Architecte", undercover:"Ingénieur" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Comptable", undercover:"Auditeur" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Community manager", undercover:"Chargé de communication" },
+  { theme:"Objets", difficulty:"facile", civil:"Téléphone", undercover:"Ordinateur" },
+  { theme:"Objets", difficulty:"facile", civil:"Parapluie", undercover:"Chapeau" },
+  { theme:"Objets", difficulty:"moyen", civil:"Stylo", undercover:"Crayon" },
+  { theme:"Objets", difficulty:"moyen", civil:"Valise", undercover:"Sac à dos" },
+  { theme:"Objets", difficulty:"difficile", civil:"Fourchette", undercover:"Cuillère" },
+  { theme:"Objets", difficulty:"difficile", civil:"Bougie", undercover:"Lampe" },
+  { theme:"Lieux", difficulty:"facile", civil:"Plage", undercover:"Montagne" },
+  { theme:"Lieux", difficulty:"facile", civil:"École", undercover:"Bibliothèque" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Stade", undercover:"Gymnase" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Musée", undercover:"Galerie d'art" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Aéroport", undercover:"Gare" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Chalet", undercover:"Cabane" },
+  { theme:"Boissons", difficulty:"facile", civil:"Café", undercover:"Thé" },
+  { theme:"Boissons", difficulty:"facile", civil:"Eau", undercover:"Jus d'orange" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Vin", undercover:"Champagne" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Smoothie", undercover:"Milkshake" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Cidre", undercover:"Poiré" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Limonade", undercover:"Soda" },
+  { theme:"Transport", difficulty:"facile", civil:"Voiture", undercover:"Vélo" },
+  { theme:"Transport", difficulty:"facile", civil:"Avion", undercover:"Train" },
+  { theme:"Transport", difficulty:"moyen", civil:"Trottinette", undercover:"Skateboard" },
+  { theme:"Transport", difficulty:"moyen", civil:"Bus", undercover:"Tramway" },
+  { theme:"Transport", difficulty:"difficile", civil:"Métro", undercover:"RER" },
+  { theme:"Transport", difficulty:"difficile", civil:"Voilier", undercover:"Catamaran" },
+  { theme:"Divertissement", difficulty:"facile", civil:"Cinéma", undercover:"Théâtre" },
+  { theme:"Divertissement", difficulty:"facile", civil:"Concert", undercover:"Festival" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Jeu vidéo", undercover:"Jeu de société" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Roman", undercover:"Bande dessinée" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Podcast", undercover:"Radio" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Stand-up", undercover:"Improvisation" }
+];
+
+var ROLE_LABEL = { civil:"Civil", undercover:"Undercover", white:"Mr. White" };
+
+var state = {
+  screen:"setup", // setup | reveal | clues | vote | whiteGuess | eliminationReveal | end
+  playerNames:["Joueur 1","Joueur 2","Joueur 3","Joueur 4"],
+  numUndercover:1, numWhite:0,
+  theme:"Aléatoire", difficulty:"Aléatoire",
+  library:[], gameHistory:[],
+  showLibrary:false, showStats:false,
+  players:[], wordPair:null,
+  revealIndex:0, revealed:false,
+  round:1, clueOrder:[], clueTurn:0,
+  eliminations:[], selectedVote:null, justEliminated:null,
+  winner:null,
+  themeMode:"dark"
+};
+
+function migrateLibrary(){
+  var stored = null;
+  try{ var raw = localStorage.getItem("undercover_library"); if(raw) stored = JSON.parse(raw); }catch(e){}
+  if(stored && stored.length){ state.library = stored; return; }
+  var oldCustom = [];
+  try{ var cp = localStorage.getItem("undercover_custom_pairs"); if(cp) oldCustom = JSON.parse(cp); }catch(e){}
+  var lib = BUILTIN_PAIRS.map(function(p,i){ return { id:"b"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }; });
+  oldCustom.forEach(function(p,i){ lib.push({ id:"c"+Date.now()+"_"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }); });
+  state.library = lib;
+  saveLibrary();
+}
+function saveLibrary(){ try{ localStorage.setItem("undercover_library", JSON.stringify(state.library)); }catch(e){} }
+
+function loadStorage(){
+  migrateLibrary();
+  try{ var gh = localStorage.getItem("undercover_game_history"); if(gh) state.gameHistory = JSON.parse(gh); }catch(e){}
+  try{ var tm = localStorage.getItem("undercover_theme"); if(tm==="light"||tm==="dark") state.themeMode = tm; }catch(e){}
+  applyTheme();
+}
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", state.themeMode);
+}
+function toggleTheme(){
+  state.themeMode = state.themeMode==="dark" ? "light" : "dark";
+  try{ localStorage.setItem("undercover_theme", state.themeMode); }catch(e){}
+  applyTheme();
+  render();
+}
+function toggleFullscreen(){
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if(!isFs){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if(req){ try{ req.call(el); }catch(e){} }
+  } else {
+    var exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if(exit){ try{ exit.call(document); }catch(e){} }
+  }
+}
+document.addEventListener("fullscreenchange", function(){ render(); });
+document.addEventListener("webkitfullscreenchange", function(){ render(); });
+function saveGameHistory(){ try{ localStorage.setItem("undercover_game_history", JSON.stringify(state.gameHistory.slice(0,30))); }catch(e){} }
+
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function allPairs(){ return state.library; }
+function themesList(){
+  var set = {}; allPairs().forEach(function(p){ set[p.theme]=true; });
+  return ["Aléatoire"].concat(Object.keys(set));
+}
+
+function addPlayer(){
+  var input = document.getElementById("nameInput");
+  var name = input.value.trim();
+  if(!name) return;
+  state.playerNames.push(name);
+  render();
+}
+function removePlayer(idx){ state.playerNames.splice(idx,1); render(); }
+
+function changeUndercover(delta){
+  state.numUndercover = Math.max(0, Math.min(3, state.numUndercover+delta)); render();
+}
+function changeWhite(delta){
+  state.numWhite = Math.max(0, Math.min(2, state.numWhite+delta)); render();
+}
+function setTheme(v){ state.theme=v; }
+function setDifficulty(v){ state.difficulty=v; }
+
+function startGame(){
+  var themeSel = document.getElementById("themeSel");
+  var diffSel = document.getElementById("diffSel");
+  if(themeSel) state.theme = themeSel.value;
+  if(diffSel) state.difficulty = diffSel.value;
+
+  var pool = allPairs();
+  if(state.theme !== "Aléatoire") pool = pool.filter(function(p){return p.theme===state.theme;});
+  if(state.difficulty !== "Aléatoire") pool = pool.filter(function(p){return p.difficulty===state.difficulty;});
+  if(pool.length===0) pool = allPairs();
+  var pair = pool[Math.floor(Math.random()*pool.length)];
+
+  var order = shuffle(state.playerNames.map(function(_,i){return i;}));
+  var players = state.playerNames.map(function(name,idx){
+    return { id:idx, name:name, role:"civil", word:pair.civil, alive:true };
+  });
+  order.slice(0,state.numUndercover).forEach(function(idx){ players[idx].role="undercover"; players[idx].word=pair.undercover; });
+  order.slice(state.numUndercover, state.numUndercover+state.numWhite).forEach(function(idx){ players[idx].role="white"; players[idx].word=null; });
+
+  state.players = players;
+  state.wordPair = pair;
+  state.revealIndex = 0;
+  state.revealed = false;
+  state.round = 1;
+  state.eliminations = [];
+  state.winner = null;
+  state.clueOrder = shuffle(players.map(function(p){return p.id;}));
+  state.clueTurn = 0;
+  state.screen = "reveal";
+  render();
+}
+
+function revealCard(){ state.revealed = true; render(); }
+function nextReveal(){
+  if(state.revealIndex+1 >= state.players.length){ state.screen="clues"; }
+  else { state.revealIndex++; state.revealed=false; }
+  render();
+}
+
+function aliveClueOrder(){
+  return state.clueOrder.filter(function(id){
+    var p = state.players.find(function(pl){return pl.id===id;});
+    return p && p.alive;
+  });
+}
+function nextClueTurn(){
+  var order = aliveClueOrder();
+  if(state.clueTurn+1 >= order.length){ state.screen="vote"; state.selectedVote=null; }
+  else { state.clueTurn++; }
+  render();
+}
+function goToVote(){ state.screen="vote"; state.selectedVote=null; render(); }
+function selectVote(id){ state.selectedVote = id; render(); }
+
+function confirmVote(){
+  if(state.selectedVote==null) return;
+  var target = state.players.find(function(p){return p.id===state.selectedVote;});
+  state.justEliminated = target;
+  target.alive = false;
+  state.eliminations.push({ round:state.round, playerId:target.id, name:target.name, role:target.role });
+  if(target.role==="white"){
+    state.screen="whiteGuess";
+  } else {
+    state.screen="eliminationReveal";
+  }
+  render();
+}
+
+function submitWhiteGuess(){
+  var input = document.getElementById("whiteGuessInput");
+  var guess = (input ? input.value : "").trim();
+  var correct = guess.length>0 && guess.toLowerCase()===state.wordPair.civil.trim().toLowerCase();
+  var last = state.eliminations[state.eliminations.length-1];
+  last.whiteGuess = guess;
+  last.whiteCorrect = correct;
+  if(correct){ finishGame("white"); }
+  else { state.screen="eliminationReveal"; render(); }
+}
+
+function checkWinCondition(){
+  var alive = state.players.filter(function(p){return p.alive;});
+  var aliveInf = alive.filter(function(p){return p.role!=="civil";}).length;
+  var aliveCiv = alive.filter(function(p){return p.role==="civil";}).length;
+  if(aliveInf===0) return "civils";
+  if(aliveInf>=aliveCiv) return "infiltrators";
+  return null;
+}
+function proceedAfterElimination(){
+  var result = checkWinCondition();
+  if(result){ finishGame(result); return; }
+  state.round++;
+  var aliveIds = state.players.filter(function(p){return p.alive;}).map(function(p){return p.id;});
+  state.clueOrder = shuffle(aliveIds);
+  state.clueTurn = 0;
+  state.screen = "clues";
+  render();
+}
+
+function finishGame(winnerKey){
+  state.winner = winnerKey;
+  state.screen = "end";
+  state.gameHistory.unshift({
+    date:new Date().toISOString(),
+    winner:winnerKey,
+    players: state.players.map(function(p){return {name:p.name, role:p.role};}),
+    rounds: state.round,
+    wordPair: state.wordPair,
+    eliminations: state.eliminations
+  });
+  saveGameHistory();
+  render();
+}
+
+function newGameSamePlayers(){ state.screen="setup"; render(); }
+
+function openLibrary(){ state.showLibrary=true; render(); }
+function closeLibrary(){ state.showLibrary=false; render(); }
+function openStats(){ state.showStats=true; render(); }
+function closeStats(){ state.showStats=false; render(); }
+
+function addLibraryPair(){
+  var civil = document.getElementById("wmCivil").value.trim();
+  var undercover = document.getElementById("wmUndercover").value.trim();
+  var theme = document.getElementById("wmTheme").value.trim();
+  var diff = document.getElementById("wmDiff").value;
+  if(!civil || !undercover || !theme) return;
+  state.library.push({ id:"c"+Date.now()+"_"+Math.floor(Math.random()*1000), theme:theme, difficulty:diff, civil:civil, undercover:undercover });
+  saveLibrary();
+  render();
+}
+function deleteLibraryPair(id){
+  state.library = state.library.filter(function(p){ return p.id!==id; });
+  saveLibrary();
+  render();
+}
+function moveLibraryPair(id, newTheme){
+  var p = state.library.find(function(pl){ return pl.id===id; });
+  if(p){ p.theme = newTheme; saveLibrary(); }
+  render();
+}
+
+// ============ RENDER ============
+
+function render(){
+  var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  var html = "";
+  html += '<header><div><h1 class="display">UNDERCOVER</h1><div class="subtitle">DOSSIER CONFIDENTIEL — JEU DE DÉDUCTION</div></div>';
+  html += '<div class="headerbtns">';
+  if(state.screen==="setup" && !state.showLibrary && !state.showStats){
+    html += '<button class="iconbtn" onclick="openLibrary()" aria-label="Bibliothèque">&#128214;</button>';
+    html += '<button class="iconbtn" onclick="openStats()" aria-label="Historique">&#8635;</button>';
+  }
+  html += '<button class="themebtn" onclick="toggleTheme()">'+(state.themeMode==="dark" ? "&#9728; Clair" : "&#9789; Sombre")+'</button>';
+  html += '<button class="themebtn" onclick="toggleFullscreen()">'+(isFs ? "&#10005; Quitter" : "&#9974; Plein écran")+'</button>';
+  html += '</div></header>';
+
+  if(state.showLibrary){ html += renderLibrary(); }
+  else if(state.showStats){ html += renderStats(); }
+  else if(state.screen==="setup"){ html += renderSetup(); }
+  else if(state.screen==="reveal"){ html += renderReveal(); }
+  else if(state.screen==="clues"){ html += renderClues(); }
+  else if(state.screen==="vote"){ html += renderVote(); }
+  else if(state.screen==="whiteGuess"){ html += renderWhiteGuess(); }
+  else if(state.screen==="eliminationReveal"){ html += renderEliminationReveal(); }
+  else if(state.screen==="end"){ html += renderEnd(); }
+
+  document.getElementById("app").innerHTML = html;
+  var ni = document.getElementById("nameInput");
+  if(ni){ ni.addEventListener("keydown", function(e){ if(e.key==="Enter") addPlayer(); }); ni.focus({preventScroll:true}); }
+  var wg = document.getElementById("whiteGuessInput");
+  if(wg){ wg.addEventListener("keydown", function(e){ if(e.key==="Enter") submitWhiteGuess(); }); wg.focus({preventScroll:true}); }
+}
+
+function renderSetup(){
+  var n = state.playerNames.length;
+  var numCivils = n - state.numUndercover - state.numWhite;
+  var tooMany = (state.numUndercover+state.numWhite) >= numCivils || numCivils<1;
+  var canStart = n>=3 && !tooMany;
+
+  var chips = state.playerNames.map(function(name,idx){
+    return '<div class="chip"><span>'+esc(name)+'</span><button onclick="removePlayer('+idx+')">&#10005;</button></div>';
+  }).join("");
+
+  var themes = themesList();
+  var themeOpts = themes.map(function(t){ return '<option value="'+esc(t)+'"'+(t===state.theme?" selected":"")+'>'+esc(t)+'</option>'; }).join("");
+  var diffs = ["Aléatoire","facile","moyen","difficile"];
+  var diffOpts = diffs.map(function(d){ return '<option value="'+d+'"'+(d===state.difficulty?" selected":"")+'>'+d+'</option>'; }).join("");
+
+  var html = "";
+  html += '<div class="panel"><h2>Joueurs ('+n+')</h2><div class="chips">'+chips+'</div>';
+  html += '<div class="inline2"><input type="text" id="nameInput" placeholder="Nom du joueur"><button class="btn btn-ghost btn-small" onclick="addPlayer()">+</button></div></div>';
+
+  html += '<div class="panel"><h2>Infiltrés</h2>';
+  html += '<div class="row"><span class="label">Undercover</span><div class="stepper"><button onclick="changeUndercover(-1)">−</button><span class="val mono">'+state.numUndercover+'</span><button onclick="changeUndercover(1)">+</button></div></div>';
+  html += '<div class="row"><span class="label">Mr. White</span><div class="stepper"><button onclick="changeWhite(-1)">−</button><span class="val mono">'+state.numWhite+'</span><button onclick="changeWhite(1)">+</button></div></div>';
+  html += '<div class="mono dim" style="font-size:12px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">'+numCivils+' civil'+(numCivils>1?"s":"")+' · '+state.numUndercover+' undercover · '+state.numWhite+' mr. white</div>';
+  if(tooMany) html += '<div class="warn">Trop d\'infiltrés pour '+n+' joueurs — les civils doivent rester majoritaires.</div>';
+  html += '</div>';
+
+  html += '<div class="panel"><h2>Mots secrets</h2><div class="grid2">';
+  html += '<div><span class="fieldlabel">Thème</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
+  html += '<div><span class="fieldlabel">Difficulté</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
+  html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots</button></div>';
+
+  html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Lancer la partie &#8594;</button>';
+  if(n<3) html += '<p class="dim center" style="font-size:12px;">Ajoutez au moins 3 joueurs.</p>';
+  return html;
+}
+
+function renderReveal(){
+  var p = state.players[state.revealIndex];
+  var html = '<p class="center mono dim" style="font-size:12px;">JOUEUR '+(state.revealIndex+1)+' / '+state.players.length+'</p>';
+  html += '<div class="panel center py-lg">';
+  if(!state.revealed){
+    html += '<p class="dim" style="font-size:14px;">Passez l\'appareil à</p>';
+    html += '<p class="display" style="font-size:24px;margin:6px 0 20px;">'+esc(p.name)+'</p>';
+    html += '<div class="redacted"><div></div><div></div><div></div><div></div></div>';
+    html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="revealCard()">&#128065; Voir mon rôle</button>';
+  } else {
+    var cls = p.role==="civil" ? "stamp olive" : "stamp";
+    html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+    if(p.role==="white"){
+      html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Vous n\'avez aucun mot. Écoutez les autres et bluffez pour ne pas être démasqué.</p>';
+    } else {
+      html += '<p class="dim mt16" style="font-size:12px;">Votre mot</p><p class="wordbig">'+esc(p.word)+'</p>';
+    }
+    html += '<button class="btn btn-ghost mt24" style="width:auto;padding:11px 20px;" onclick="nextReveal()">J\'ai vu, cacher et passer</button>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderClues(){
+  var order = aliveClueOrder();
+  var currentId = order[state.clueTurn];
+  var current = state.players.find(function(p){return p.id===currentId;});
+  var html = '<div class="toprow"><div class="stamp sm">Round '+state.round+'</div><span class="mono dim" style="font-size:12px;">'+(state.clueTurn+1)+' / '+order.length+'</span></div>';
+  html += '<div class="panel center py-lg" style="margin-top:16px;">';
+  html += '<p class="dim" style="font-size:14px;">C\'est au tour de</p>';
+  html += '<p class="display" style="font-size:24px;margin:4px 0;">'+esc(current.name)+'</p>';
+  html += '<p class="dim" style="font-size:12px;margin-bottom:20px;">de donner son indice à voix haute</p>';
+  html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="nextClueTurn()">Indice donné &#8250;</button>';
+  html += '</div>';
+  html += '<div class="flexwrap">';
+  order.forEach(function(id,i){
+    var p = state.players.find(function(pl){return pl.id===id;});
+    var cls = i<state.clueTurn ? "clueChip done" : (i===state.clueTurn ? "clueChip current" : "clueChip");
+    html += '<span class="'+cls+'">'+esc(p.name)+'</span>';
+  });
+  html += '</div>';
+  html += '<button class="linkbtn mt16" onclick="goToVote()">Passer directement au vote</button>';
+  return html;
+}
+
+function renderVote(){
+  var alive = state.players.filter(function(p){return p.alive;});
+  var html = '<div class="stamp sm">Round '+state.round+' — Vote</div>';
+  html += '<p class="dim mt10" style="font-size:14px;">Les joueurs ont débattu et voté à l\'oral. Sélectionnez le joueur éliminé.</p>';
+  html += '<div class="mt16">';
+  alive.forEach(function(p){
+    var sel = state.selectedVote===p.id;
+    html += '<button class="voteitem'+(sel?" selected":"")+'" onclick="selectVote('+p.id+')"><span>'+esc(p.name)+'</span>'+(sel?'<span>&#10003;</span>':'')+'</button>';
+  });
+  html += '</div>';
+  html += '<button class="btn btn-primary" '+(state.selectedVote==null?"disabled":"")+' onclick="confirmVote()">&#128128; Confirmer l\'élimination</button>';
+  return html;
+}
+
+function renderWhiteGuess(){
+  var p = state.justEliminated;
+  var html = '<div class="panel center py-lg">';
+  html += '<div class="stamp md">Mr. White démasqué</div>';
+  html += '<p class="mt16" style="font-size:15px;">'+esc(p.name)+', dernière chance :</p>';
+  html += '<p class="dim mb10" style="font-size:13px;">devinez le mot des civils pour gagner la partie</p>';
+  html += '<input type="text" id="whiteGuessInput" placeholder="Votre réponse" style="text-align:center;">';
+  html += '<button class="btn btn-primary mt16" onclick="submitWhiteGuess()">Valider la réponse</button>';
+  html += '</div>';
+  return html;
+}
+
+function renderEliminationReveal(){
+  var p = state.justEliminated;
+  var last = state.eliminations[state.eliminations.length-1];
+  var aliveCiv = state.players.filter(function(pl){return pl.alive && pl.role==="civil";}).length;
+  var aliveInf = state.players.filter(function(pl){return pl.alive && pl.role!=="civil";}).length;
+  var cls = p.role==="civil" ? "stamp olive" : "stamp";
+  var html = '<div class="panel center py-lg">';
+  html += '<p class="dim" style="font-size:14px;">'+esc(p.name)+' était</p>';
+  html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+  if(last && last.whiteGuess){
+    html += '<p class="dim mt16" style="font-size:13px;">A proposé « '+esc(last.whiteGuess)+' » — '+(last.whiteCorrect?"correct":"incorrect")+'</p>';
+  }
+  html += '<p class="mono faint mt16" style="font-size:11px;">Restent en vie : '+aliveCiv+' civil'+(aliveCiv>1?"s":"")+', '+aliveInf+' infiltré'+(aliveInf>1?"s":"")+'</p>';
+  html += '<button class="btn btn-ghost mt16" style="width:auto;padding:11px 20px;" onclick="proceedAfterElimination()">Continuer</button>';
+  html += '</div>';
+  return html;
+}
+
+function renderEnd(){
+  var label = state.winner==="civils" ? "Les Civils gagnent" : (state.winner==="white" ? "Mr. White gagne" : "Les Infiltrés gagnent");
+  var cls = state.winner==="civils" ? "stamp olive" : "stamp";
+  var html = '<div class="panel center py-lg">';
+  html += '<div class="'+cls+'">'+label+'</div>';
+  html += '<p class="mono dim mt16" style="font-size:12px;">Partie terminée en '+state.round+' round'+(state.round>1?"s":"")+'</p>';
+  html += '</div>';
+
+  html += '<div class="panel"><h2>Mots de la partie</h2><div class="split">';
+  html += '<div><p class="dim" style="font-size:12px;">Civils</p><p class="num">'+esc(state.wordPair.civil)+'</p></div>';
+  html += '<div><p class="dim" style="font-size:12px;">Undercover</p><p class="num">'+esc(state.wordPair.undercover)+'</p></div>';
+  html += '</div></div>';
+
+  html += '<div class="panel"><h2>Récapitulatif</h2>';
+  state.players.forEach(function(p){
+    html += '<div class="listrow"><span class="'+(p.alive?"":"strike")+'">'+esc(p.name)+'</span><span class="mono dim" style="font-size:12px;">'+ROLE_LABEL[p.role]+'</span></div>';
+  });
+  if(state.eliminations.length>0){
+    html += '<div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;">';
+    state.eliminations.forEach(function(e){
+      html += '<p class="dim" style="font-size:12px;margin:4px 0;">Round '+e.round+' — '+esc(e.name)+' éliminé ('+ROLE_LABEL[e.role]+')</p>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '<button class="btn btn-primary" onclick="newGameSamePlayers()">&#8635; Nouvelle partie</button>';
+  return html;
+}
+
+function renderLibrary(){
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeLibrary()">&#8249; Retour</button>';
+  html += '<div class="panel"><h2>Ajouter un mot</h2>';
+  html += '<div class="grid2"><input type="text" id="wmCivil" placeholder="Mot civil"><input type="text" id="wmUndercover" placeholder="Mot undercover"></div>';
+  html += '<div class="grid2"><input type="text" id="wmTheme" placeholder="Thème (existant ou nouveau)"><select id="wmDiff"><option value="facile">facile</option><option value="moyen" selected>moyen</option><option value="difficile">difficile</option></select></div>';
+  html += '<button class="btn btn-ghost" onclick="addLibraryPair()">+ Ajouter à la bibliothèque</button></div>';
+
+  var groups = {};
+  state.library.forEach(function(p){ (groups[p.theme]=groups[p.theme]||[]).push(p); });
+  var themeNames = Object.keys(groups).sort();
+
+  html += '<div class="panel"><h2>Bibliothèque ('+state.library.length+' mots)</h2>';
+  themeNames.forEach(function(t){
+    html += '<p class="mono dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 6px;">'+esc(t)+' ('+groups[t].length+')</p>';
+    groups[t].forEach(function(p){
+      var opts = themeNames.map(function(tn){ return '<option value="'+esc(tn)+'"'+(tn===p.theme?" selected":"")+'>'+esc(tn)+'</option>'; }).join("");
+      html += '<div class="libraryrow">';
+      html += '<div class="libwords"><span>'+esc(p.civil)+'</span><span class="dim"> / </span><span>'+esc(p.undercover)+'</span><span class="mono faint" style="font-size:10px;display:block;">'+p.difficulty+'</span></div>';
+      html += '<div class="libcontrols"><select class="libSelect" onchange="moveLibraryPair(\''+p.id+'\', this.value)">'+opts+'</select><button onclick="deleteLibraryPair(\''+p.id+'\')" aria-label="Supprimer">&#128465;</button></div>';
+      html += '</div>';
+    });
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderStats(){
+  var total = state.gameHistory.length;
+  var civilWins = state.gameHistory.filter(function(g){return g.winner==="civils";}).length;
+  var infWins = total - civilWins;
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeStats()">&#8249; Retour</button>';
+  html += '<div class="panel"><h2>Statistiques</h2><div class="split">';
+  html += '<div><p class="num">'+total+'</p><p class="dim" style="font-size:12px;">parties</p></div>';
+  html += '<div><p class="num">'+civilWins+'</p><p class="dim" style="font-size:12px;">civils</p></div>';
+  html += '<div><p class="num">'+infWins+'</p><p class="dim" style="font-size:12px;">infiltrés</p></div>';
+  html += '</div></div>';
+
+  html += '<div class="panel"><h2>Historique</h2>';
+  if(total===0){
+    html += '<p class="dim" style="font-size:12px;">Aucune partie enregistrée encore.</p>';
+  } else {
+    state.gameHistory.forEach(function(g){
+      var w = g.winner==="civils" ? "Civils" : (g.winner==="white" ? "Mr. White" : "Infiltrés");
+      html += '<div class="histrow"><div class="toprow"><span>'+w+'</span><span class="mono faint" style="font-size:11px;">'+new Date(g.date).toLocaleDateString("fr-FR")+'</span></div>';
+      html += '<p class="dim" style="font-size:12px;">'+g.players.length+' joueurs · '+g.rounds+' round'+(g.rounds>1?"s":"")+' · mot : '+esc(g.wordPair.civil)+'</p></div>';
+    });
+  }
+  html += '</div>';
+  return html;
+}
+
+loadStorage();
+render();
+</script>
 </body>
 </html>
