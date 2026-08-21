@@ -263,6 +263,7 @@ var state = {
   playerNames:["Joueur 1","Joueur 2","Joueur 3","Joueur 4"],
   numUndercover:1, numWhite:0,
   theme:"Aléatoire", difficulty:"Aléatoire",
+  isGameMaster:false, customCivil:"", customUndercover:"",
   library:[], gameHistory:[],
   showLibrary:false, showStats:false,
   players:[], wordPair:null,
@@ -368,17 +369,38 @@ function changeWhite(delta){
 function setTheme(v){ state.theme=v; }
 function setDifficulty(v){ state.difficulty=v; }
 
-function startGame(){
-  var themeSel = document.getElementById("themeSel");
-  var diffSel = document.getElementById("diffSel");
-  if(themeSel) state.theme = themeSel.value;
-  if(diffSel) state.difficulty = diffSel.value;
+function toggleGameMaster(){
+  state.isGameMaster = !state.isGameMaster;
+  render();
+}
 
-  var pool = allPairs();
-  if(state.theme !== "Aléatoire") pool = pool.filter(function(p){return p.theme===state.theme;});
-  if(state.difficulty !== "Aléatoire") pool = pool.filter(function(p){return p.difficulty===state.difficulty;});
-  if(pool.length===0) pool = allPairs();
-  var pair = pool[Math.floor(Math.random()*pool.length)];
+function startGame(){
+  var pair = null;
+
+  // Récupération des choix si le mode Game Master est actif
+  if(state.isGameMaster){
+    var gmCiv = document.getElementById("gmCivil");
+    var gmUnd = document.getElementById("gmUndercover");
+    if(gmCiv) state.customCivil = gmCiv.value.trim();
+    if(gmUnd) state.customUndercover = gmUnd.value.trim();
+
+    if(!state.customCivil || !state.customUndercover){
+      alert("Veuillez renseigner les deux mots pour le mode Game Master.");
+      return;
+    }
+    pair = { theme:"Personnalisé", difficulty:"Custom", civil:state.customCivil, undercover:state.customUndercover };
+  } else {
+    var themeSel = document.getElementById("themeSel");
+    var diffSel = document.getElementById("diffSel");
+    if(themeSel) state.theme = themeSel.value;
+    if(diffSel) state.difficulty = diffSel.value;
+
+    var pool = allPairs();
+    if(state.theme !== "Aléatoire") pool = pool.filter(function(p){return p.theme===state.theme;});
+    if(state.difficulty !== "Aléatoire") pool = pool.filter(function(p){return p.difficulty===state.difficulty;});
+    if(pool.length===0) pool = allPairs();
+    pair = pool[Math.floor(Math.random()*pool.length)];
+  }
 
   var order = shuffle(state.playerNames.map(function(_,i){return i;}));
   var players = state.playerNames.map(function(name,idx){
@@ -567,10 +589,26 @@ function renderSetup(){
   if(tooMany) html += '<div class="warn">Trop d\'infiltrés pour '+n+' joueurs — les civils doivent rester majoritaires.</div>';
   html += '</div>';
 
-  html += '<div class="panel"><h2>Mots secrets</h2><div class="grid2">';
-  html += '<div><span class="fieldlabel">Thème</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
-  html += '<div><span class="fieldlabel">Difficulté</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
-  html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots ('+state.library.length+')</button></div>';
+  // --- SECTION MOTS SECRETS & MODE GAME MASTER ---
+  html += '<div class="panel">';
+  html += '<div class="toprow mb10"><h2>Mots secrets</h2>';
+  html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;" class="dim mono">';
+  html += '<input type="checkbox" '+(state.isGameMaster?"checked":"")+' onchange="toggleGameMaster()"> Mode Game Master';
+  html += '</label></div>';
+
+  if(state.isGameMaster){
+    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;">Définissez manuellement les mots pour cette partie :</p>';
+    html += '<div class="grid2">';
+    html += '<div><span class="fieldlabel">Mot des Civils</span><input type="text" id="gmCivil" value="'+esc(state.customCivil)+'" placeholder="ex: Soleil" oninput="state.customCivil=this.value"></div>';
+    html += '<div><span class="fieldlabel">Mot des Undercovers</span><input type="text" id="gmUndercover" value="'+esc(state.customUndercover)+'" placeholder="ex: Lune" oninput="state.customUndercover=this.value"></div>';
+    html += '</div>';
+  } else {
+    html += '<div class="grid2">';
+    html += '<div><span class="fieldlabel">Thème</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
+    html += '<div><span class="fieldlabel">Difficulté</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
+    html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots ('+state.library.length+')</button>';
+  }
+  html += '</div>';
 
   html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Lancer la partie &#8594;</button>';
   if(n<3) html += '<p class="dim center" style="font-size:12px;">Ajoutez au moins 3 joueurs.</p>';
