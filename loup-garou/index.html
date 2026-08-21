@@ -228,7 +228,8 @@
 <body>
 
     <div class="top-bar">
-        <a href="../jeux.io/" class="btn-back">&lsaquo; HUB</a>
+        <!-- MODIFICATION ICI : On utilise ../ pour remonter directement d'un niveau au dossier parent (le hub) -->
+        <a href="../" class="btn-back">&lsaquo; HUB</a>
     </div>
 
     <main class="container" id="app"></main>
@@ -691,7 +692,6 @@
                 `;
             } else if (currentStep === "sorciere") {
                 
-                // --- MISE À JOUR : Le nom de la victime est bien récupéré et mis en valeur ---
                 const victim = state.gamePlayers.find(p => p.id === state.nightActions.wolfVictim);
                 
                 contentHtml = `
