@@ -102,6 +102,7 @@
     transform:rotate(-3deg);font-family:'Courier New',monospace;font-weight:bold;letter-spacing:0.05em;
     box-shadow:inset 0 0 0 2px var(--panel);}
   .stamp.olive{border-color:var(--olive);color:var(--olive);}
+  .stamp.neutral{border-color:var(--dim);color:var(--dim);} /* Nouveau tampon pour le rôle caché */
   .stamp.sm{font-size:12px;padding:5px 12px;border-width:2px;}
   .stamp.md{font-size:14px;padding:7px 15px;border-width:2px;}
 
@@ -295,6 +296,7 @@ var state = {
   numUndercover:1, numWhite:0,
   theme:"Aléatoire", difficulty:"Aléatoire",
   isGameMaster:false, customCivil:"", customUndercover:"",
+  blindMode:false, // Ajout de l'état pour le mode rôle caché
   library:[], gameHistory:[],
   showLibrary:false, showStats:false,
   players:[], wordPair:null,
@@ -402,6 +404,11 @@ function setDifficulty(v){ state.difficulty=v; }
 
 function toggleGameMaster(){
   state.isGameMaster = !state.isGameMaster;
+  render();
+}
+// Nouvelle fonction pour basculer le mode Identité Secrète
+function toggleBlindMode(){
+  state.blindMode = !state.blindMode;
   render();
 }
 
@@ -622,19 +629,25 @@ function renderSetup(){
 
   // --- SECTION MOTS SECRETS & MODE MENEUR D'ENQUÊTE ---
   html += '<div class="panel">';
-  html += '<div class="toprow mb10"><h2>Mots codés</h2>';
+  html += '<div class="toprow mb10"><h2>Mots codés & Règles</h2></div>';
+  
   html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;" class="dim mono">';
   html += '<input type="checkbox" '+(state.isGameMaster?"checked":"")+' onchange="toggleGameMaster()"> Mode Meneur d\'enquête';
-  html += '</label></div>';
+  html += '</label>';
+
+  // Nouveau : Checkbox du mode rôle caché
+  html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:10px;margin-bottom:10px;" class="dim mono">';
+  html += '<input type="checkbox" '+(state.blindMode?"checked":"")+' onchange="toggleBlindMode()"> Mode Identité Secrète (Rôles cachés)';
+  html += '</label>';
 
   if(state.isGameMaster){
-    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;">Définissez manuellement les mots pour cette affaire :</p>';
+    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;border-top:1px solid var(--border);padding-top:10px;">Définissez manuellement les mots pour cette affaire :</p>';
     html += '<div class="grid2">';
     html += '<div><span class="fieldlabel">Mot des Civils</span><input type="text" id="gmCivil" value="'+esc(state.customCivil)+'" placeholder="ex: Soleil" oninput="state.customCivil=this.value"></div>';
     html += '<div><span class="fieldlabel">Mot des Undercovers</span><input type="text" id="gmUndercover" value="'+esc(state.customUndercover)+'" placeholder="ex: Lune" oninput="state.customUndercover=this.value"></div>';
     html += '</div>';
   } else {
-    html += '<div class="grid2">';
+    html += '<div class="grid2" style="border-top:1px solid var(--border);padding-top:10px;">';
     html += '<div><span class="fieldlabel">Dossier</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
     html += '<div><span class="fieldlabel">Niveau</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
     html += '</div><button class="linkbtn" onclick="openLibrary()">Consulter les archives d\'indices ('+state.library.length+')</button>';
@@ -650,19 +663,33 @@ function renderReveal(){
   var p = state.players[state.revealIndex];
   var html = '<p class="center mono dim" style="font-size:12px;">DÉPOSITION '+(state.revealIndex+1)+' / '+state.players.length+'</p>';
   html += '<div class="panel center py-lg">';
+  
   if(!state.revealed){
     html += '<p class="dim" style="font-size:14px;">Remettez le dossier à</p>';
     html += '<p class="display" style="font-size:24px;margin:6px 0 20px;">'+esc(p.name)+'</p>';
     html += '<div class="redacted"><div></div><div></div><div></div><div></div></div>';
     html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="revealCard()">&#128065; Ouvrir mon dossier</button>';
   } else {
-    var cls = p.role==="civil" ? "stamp olive" : "stamp";
-    html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
-    if(p.role==="white"){
-      html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
+    
+    // --- NOUVEAU : Application du mode Identité Secrète ---
+    if(state.blindMode) {
+        html += '<div class="stamp neutral">IDENTITÉ SECRÈTE</div>';
+        if(p.role==="white"){
+          html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
+        } else {
+          html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
+        }
     } else {
-      html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
+        // --- Mode classique (on donne le rôle au joueur) ---
+        var cls = p.role==="civil" ? "stamp olive" : "stamp";
+        html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+        if(p.role==="white"){
+          html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
+        } else {
+          html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
+        }
     }
+
     html += '<button class="btn btn-ghost mt24" style="width:auto;padding:11px 20px;" onclick="nextReveal()">Vu — refermer le dossier</button>';
   }
   html += '</div>';
@@ -725,7 +752,10 @@ function renderEliminationReveal(){
   var cls = p.role==="civil" ? "stamp olive" : "stamp";
   var html = '<div class="panel center py-lg">';
   html += '<p class="dim" style="font-size:14px;">'+esc(p.name)+' était</p>';
+  
+  // Même en mode rôle caché, on révèle le rôle à l'élimination pour que les joueurs puissent suivre la partie
   html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+  
   if(last && last.whiteGuess){
     html += '<p class="dim mt16" style="font-size:13px;">A déposé « '+esc(last.whiteGuess)+' » — '+(last.whiteCorrect?"correct":"incorrect")+'</p>';
   }
