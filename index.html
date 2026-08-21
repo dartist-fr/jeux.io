@@ -2,24 +2,23 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <!-- CRUCIAL POUR LE TÉLÉPHONE : Cette ligne adapte le site à la largeur de l'écran -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salles des Jeux de Damien</title>
+    <title>Salle d'Arcade</title>
     <style>
-        /* --- 1. Variables et Reset : Pour un code plus propre --- */
+        /* --- 1. Variables et Reset --- */
         :root {
-            --bg-body: #0a0e17; /* Fond encore plus sombre pour le contraste */
-            --bg-card: rgba(30, 41, 59, 0.7); /* Fond de carte transparent */
+            --bg-body: #0a0e17;
+            --bg-card: rgba(30, 41, 59, 0.7);
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
-            --accent: #38bdf8; /* Cyan vibrant pour les accents */
+            --accent: #38bdf8;
             --accent-hover: #0ea5e9;
             --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             --shadow-hover: 0 20px 25px -5px rgba(56, 189, 248, 0.15), 0 10px 10px -5px rgba(56, 189, 248, 0.1);
         }
 
         * {
-            box-sizing: border-box; /* Calcule les tailles bordures incluses */
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
@@ -32,47 +31,77 @@
                 radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
             color: var(--text-main);
             line-height: 1.6;
-            padding: 40px 20px;
+            padding: 20px 20px 40px 20px;
             min-height: 100vh;
         }
 
-        /* --- 2. En-tête --- */
+        /* --- 2. Barre supérieure & Bouton Retour --- */
+        .top-bar {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover, .btn-back:focus {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent);
+            color: var(--text-main);
+            transform: translateX(-2px);
+        }
+
+        /* --- 3. En-tête --- */
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 800;
-            background: linear-gradient(to right, #38bdf8, #a78bfa); /* Dégradé moderne */
+            background: linear-gradient(to right, #38bdf8, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             letter-spacing: -1px;
         }
 
         .description {
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        /* --- 3. La Grille Responsive (C'est ici que la magie opère !) --- */
+        /* --- 4. Grille Responsive --- */
         .grid-jeux {
             display: grid;
-            /* Crée autant de colonnes de 280px minimum que possible */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px; /* Espace entre les cartes */
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* --- 4. Le Design des Cartes --- */
+        /* --- 5. Cartes de jeux --- */
         .carte-jeu {
             background: var(--bg-card);
-            backdrop-filter: blur(10px); /* Effet verre dépoli */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 30px;
@@ -82,49 +111,47 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animation fluide */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: var(--shadow-card);
         }
 
-        /* Effet au survol (souris) ou au tap (mobile) */
         .carte-jeu:hover, .carte-jeu:focus {
-            transform: translateY(-10px) scale(1.02); /* Se lève et grossit légèrement */
+            transform: translateY(-8px) scale(1.02);
             border-color: var(--accent);
             box-shadow: var(--shadow-hover);
         }
 
         .icone {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            margin-bottom: 18px;
             background: rgba(56, 189, 248, 0.1);
-            padding: 20px;
+            padding: 18px;
             border-radius: 50%;
             display: inline-block;
             transition: transform 0.3s ease;
         }
 
         .carte-jeu:hover .icone {
-            transform: rotate(5deg) scale(1.1); /* Petite animation de l'icône */
+            transform: rotate(5deg) scale(1.1);
         }
 
         .titre-jeu {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: #ffffff;
             letter-spacing: -0.5px;
         }
 
         .info-jeu {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            flex-grow: 1; /* Pousse le bouton vers le bas */
-            margin-bottom: 25px;
+            flex-grow: 1;
+            margin-bottom: 22px;
         }
 
-        /* Petit bouton décoratif en bas de carte */
         .btn-jouer {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--accent);
             text-transform: uppercase;
@@ -140,30 +167,41 @@
             color: #000;
         }
 
-        /* --- 5. Ajustements spéciaux pour Mobile (petits écrans) --- */
+        /* --- 6. Mobile --- */
         @media (max-width: 600px) {
+            body {
+                padding: 15px 15px 30px 15px;
+            }
             h1 {
-                font-size: 2.2rem; /* Titre un peu plus petit sur mobile */
+                font-size: 2.1rem;
+            }
+            .description {
+                font-size: 1rem;
             }
             .grid-jeux {
-                gap: 20px; /* Moins d'espace entre les cartes */
+                gap: 20px;
             }
             .carte-jeu {
-                padding: 25px; /* Un peu moins de padding interne */
+                padding: 22px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- Bouton de retour au Hub principal -->
+    <div class="top-bar">
+        <a href="../" class="btn-back">‹ Retour au Hub</a>
+    </div>
+
     <header>
-        <h1>Salles des Jeux</h1>
-        <p class="description">Bienvenue dans l'espace arcade de Damien. Sélectionnez un jeu pour commencer l'aventure.</p>
+        <h1>Salle d'Arcade</h1>
+        <p class="description">Bienvenue dans l'espace arcade. Sélectionnez un jeu pour commencer l'aventure.</p>
     </header>
 
     <main class="grid-jeux">
         
-        <!-- CARTE DU JEU UNDERCOVER (Actif) -->
+        <!-- JEU UNDERCOVER -->
         <a href="undercover/" class="carte-jeu">
             <div class="icone">🕵️‍♂️</div>
             <div class="titre-jeu">Undercover</div>
@@ -171,7 +209,7 @@
             <div class="btn-jouer">Jouer maintenant</div>
         </a>
 
-        <!-- CARTE DU MORPION -->
+        <!-- JEU MORPION -->
         <a href="morpion/" class="carte-jeu">
             <div class="icone">❌</div>
             <div class="titre-jeu">Morpion</div>
@@ -179,11 +217,11 @@
             <div class="btn-jouer">Jouer maintenant</div>
         </a>
         
-        <!-- CARTE DE VOTRE FUTUR JEU (Désactivé) -->
+        <!-- PROCHAIN PROJET -->
         <a href="#" class="carte-jeu" style="opacity: 0.6; cursor: not-allowed;">
-            <div class="icone">⏳</div>
-            <div class="titre-jeu">Prochain Projet</div>
-            <div class="info-jeu">Un nouveau défi est en cours de création. Revenez bientôt !</div>
+            <div class="icone">🐺</div>
+            <div class="titre-jeu">Loup-Garou</div>
+            <div class="info-jeu">Un nouveau jeu de déduction et de rôles secrets arrive bientôt.</div>
             <div class="btn-jouer">En développement</div>
         </a>
 
