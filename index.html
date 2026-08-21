@@ -3,229 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salle d'Arcade</title>
+    <title>Salle d'Arcade — Insert Coin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. Variables et Reset --- */
+        /* --- 1. Variables & Reset --- */
         :root {
-            --bg-body: #0a0e17;
-            --bg-card: rgba(30, 41, 59, 0.7);
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-            --shadow-hover: 0 20px 25px -5px rgba(56, 189, 248, 0.15), 0 10px 10px -5px rgba(56, 189, 248, 0.1);
+            --bg-body: #0b0616;
+            --bg-panel: #140a26;
+            --grid-line: rgba(124, 58, 237, 0.12);
+            --text-main: #f3e9ff;
+            --text-muted: #9d8bc4;
+            --neon-pink: #ff2e88;
+            --neon-cyan: #22e6ff;
+            --neon-yellow: #ffe14d;
+            --neon-green: #4dffa6;
+            --font-display: 'Press Start 2P', monospace;
+            --font-body: 'VT323', monospace;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { background: var(--bg-body); }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: var(--font-body);
             background-color: var(--bg-body);
-            background-image: 
-                radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
-                radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
+            /* Grille perspective type "arcade floor" */
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+                radial-gradient(circle at 50% 0%, rgba(255, 46, 136, 0.15) 0%, transparent 55%),
+                radial-gradient(circle at 50% 100%, rgba(34, 230, 255, 0.12) 0%, transparent 55%);
+            background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
             color: var(--text-main);
-            line-height: 1.6;
-            padding: 20px 20px 40px 20px;
             min-height: 100vh;
+            padding: 24px 20px 60px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* --- 2. Barre supérieure & Bouton Retour --- */
+        /* Effet scanlines CRT global */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0) 0px,
+                rgba(0, 0, 0, 0) 2px,
+                rgba(0, 0, 0, 0.18) 3px,
+                rgba(0, 0, 0, 0.18) 4px
+            );
+            z-index: 100;
+            mix-blend-mode: multiply;
+        }
+
+        /* --- 2. Barre supérieure --- */
         .top-bar {
-            max-width: 1200px;
-            margin: 0 auto 20px auto;
+            max-width: 1100px;
+            margin: 0 auto 32px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .btn-back {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--neon-cyan);
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            padding: 12px 18px;
+            border: 2px solid var(--neon-cyan);
+            background: rgba(34, 230, 255, 0.06);
+            box-shadow: 0 0 0 2px var(--bg-body), 4px 4px 0 rgba(34, 230, 255, 0.35);
+            transition: transform 0.12s steps(2), box-shadow 0.12s;
+        }
+        .btn-back:hover, .btn-back:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 0 0 0 2px var(--bg-body), 6px 6px 0 var(--neon-cyan);
+            outline: none;
         }
 
-        .btn-back:hover, .btn-back:focus {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: var(--accent);
-            color: var(--text-main);
-            transform: translateX(-2px);
+        .credits {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px rgba(255, 225, 77, 0.6);
         }
 
         /* --- 3. En-tête --- */
         header {
             text-align: center;
-            margin-bottom: 50px;
+            margin: 10px auto 54px;
+            max-width: 780px;
         }
 
         h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #38bdf8, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-            letter-spacing: -1px;
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 5vw, 3rem);
+            line-height: 1.3;
+            letter-spacing: 2px;
+            color: var(--neon-pink);
+            text-shadow:
+                0 0 8px rgba(255, 46, 136, 0.9),
+                0 0 22px rgba(255, 46, 136, 0.5),
+                4px 4px 0 #4a0d2b;
+            animation: flicker 4s infinite;
         }
+
+        @keyframes flicker {
+            0%, 92%, 100% { opacity: 1; }
+            93% { opacity: 0.7; }
+            94% { opacity: 1; }
+            96% { opacity: 0.85; }
+        }
+
+        .blink {
+            display: inline-block;
+            margin-top: 22px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(77, 255, 166, 0.7);
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
 
         .description {
             color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1.35rem;
+            margin-top: 18px;
+            letter-spacing: 0.5px;
         }
 
-        /* --- 4. Grille Responsive --- */
+        /* --- 4. Grille --- */
         .grid-jeux {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
+            gap: 28px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
-        /* --- 5. Cartes de jeux --- */
+        /* --- 5. Cartes (bornes d'arcade) --- */
         .carte-jeu {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 30px;
+            --glow: var(--neon-cyan);
+            position: relative;
+            background: var(--bg-panel);
+            border: 2px solid var(--glow);
+            padding: 30px 26px 26px;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: var(--shadow-card);
+            box-shadow: 0 0 0 4px var(--bg-body), 8px 8px 0 rgba(0,0,0,0.5);
+            transition: transform 0.15s steps(3), box-shadow 0.15s;
+        }
+        .carte-jeu::before {
+            content: attr(data-tag);
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            padding: 5px 10px;
+            background: var(--glow);
+            color: #000;
+            white-space: nowrap;
+        }
+        .carte-jeu:hover, .carte-jeu:focus {
+            transform: translate(-3px, -6px);
+            box-shadow: 0 0 0 4px var(--bg-body), 11px 14px 0 rgba(0,0,0,0.6), 0 0 26px var(--glow);
+            outline: none;
         }
 
-        .carte-jeu:hover, .carte-jeu:focus {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--accent);
-            box-shadow: var(--shadow-hover);
-        }
+        /* Variantes couleur néon par borne */
+        .carte-jeu.pink   { --glow: var(--neon-pink); }
+        .carte-jeu.cyan   { --glow: var(--neon-cyan); }
+        .carte-jeu.yellow { --glow: var(--neon-yellow); }
 
         .icone {
-            font-size: 3.5rem;
-            margin-bottom: 18px;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 18px;
-            border-radius: 50%;
-            display: inline-block;
-            transition: transform 0.3s ease;
+            font-size: 3.4rem;
+            width: 92px;
+            height: 92px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            border: 2px solid var(--glow);
+            background: rgba(0,0,0,0.35);
+            filter: drop-shadow(0 0 8px var(--glow));
+            transition: transform 0.2s steps(2);
         }
-
-        .carte-jeu:hover .icone {
-            transform: rotate(5deg) scale(1.1);
-        }
+        .carte-jeu:hover .icone { transform: scale(1.08) rotate(-3deg); }
 
         .titre-jeu {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #ffffff;
-            letter-spacing: -0.5px;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #fff;
+            text-shadow: 0 0 8px var(--glow);
+            margin-bottom: 14px;
         }
 
         .info-jeu {
-            font-size: 0.95rem;
+            font-size: 1.2rem;
             color: var(--text-muted);
+            line-height: 1.35;
             flex-grow: 1;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         .btn-jouer {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 10px 20px;
-            border: 1px solid var(--accent);
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .carte-jeu:hover .btn-jouer {
-            background-color: var(--accent);
+            font-family: var(--font-display);
+            font-size: 0.62rem;
             color: #000;
+            background: var(--glow);
+            padding: 12px 20px;
+            letter-spacing: 1px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+            transition: transform 0.1s steps(2);
+        }
+        .carte-jeu:hover .btn-jouer { transform: translateY(-2px); }
+
+        /* Carte "à venir" */
+        .carte-jeu.soon {
+            --glow: #5a4d80;
+            filter: grayscale(0.4);
+            cursor: not-allowed;
+        }
+        .carte-jeu.soon:hover { transform: none; box-shadow: 0 0 0 4px var(--bg-body), 8px 8px 0 rgba(0,0,0,0.5); }
+        .carte-jeu.soon .btn-jouer { background: #5a4d80; color: var(--text-main); }
+
+        /* --- 6. Pied de page --- */
+        footer {
+            max-width: 1100px;
+            margin: 54px auto 0;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
 
-        /* --- 6. Mobile --- */
+        /* --- 7. Mobile --- */
         @media (max-width: 600px) {
-            body {
-                padding: 15px 15px 30px 15px;
-            }
-            h1 {
-                font-size: 2.1rem;
-            }
-            .description {
-                font-size: 1rem;
-            }
-            .grid-jeux {
-                gap: 20px;
-            }
-            .carte-jeu {
-                padding: 22px;
-            }
+            body { padding: 18px 14px 40px; background-size: 28px 28px, 28px 28px, 100% 100%, 100% 100%; }
+            .grid-jeux { gap: 32px; }
+            .description { font-size: 1.15rem; }
+            .btn-back, .credits { font-size: 0.5rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Bouton de retour au Hub principal -->
     <div class="top-bar">
-        <a href="../" class="btn-back">‹ Retour au Hub</a>
+        <a href="../" class="btn-back">&lsaquo; HUB</a>
+        <span class="credits">CREDITS: &infin;</span>
     </div>
 
     <header>
         <h1>Salle d'Arcade</h1>
-        <p class="description">Bienvenue dans l'espace arcade. Sélectionnez un jeu pour commencer l'aventure.</p>
+        <p class="description">Choisis ta borne, attrape le joystick et lance la partie.</p>
+        <span class="blink">&#9654; INSERT COIN</span>
     </header>
 
     <main class="grid-jeux">
-        
-        <!-- JEU UNDERCOVER -->
-        <a href="undercover/" class="carte-jeu">
-            <div class="icone">🕵️‍♂️</div>
+
+        <a href="undercover/" class="carte-jeu pink" data-tag="1 CREDIT">
+            <div class="icone">🕵️</div>
             <div class="titre-jeu">Undercover</div>
-            <div class="info-jeu">Un jeu d'ambiance et de mots secrets. Trouvez l'intrus avant qu'il ne soit trop tard !</div>
-            <div class="btn-jouer">Jouer maintenant</div>
+            <div class="info-jeu">Jeu d'ambiance et de mots secrets. Démasque l'intrus avant qu'il ne soit trop tard !</div>
+            <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- JEU MORPION -->
-        <a href="morpion/" class="carte-jeu">
+        <a href="morpion/" class="carte-jeu cyan" data-tag="1 CREDIT">
             <div class="icone">❌</div>
             <div class="titre-jeu">Morpion</div>
-            <div class="info-jeu">Affrontez un ami sur le même écran à tour de rôle !</div>
-            <div class="btn-jouer">Jouer maintenant</div>
+            <div class="info-jeu">Affronte un ami sur le même écran, à tour de rôle. Trois alignés et c'est gagné !</div>
+            <span class="btn-jouer">Jouer &#9654;</span>
         </a>
-        
-        <!-- PROCHAIN PROJET -->
-        <a href="#" class="carte-jeu" style="opacity: 0.6; cursor: not-allowed;">
+
+        <a href="#" class="carte-jeu soon" data-tag="BIENTÔT" aria-disabled="true">
             <div class="icone">🐺</div>
             <div class="titre-jeu">Loup-Garou</div>
-            <div class="info-jeu">Un nouveau jeu de déduction et de rôles secrets arrive bientôt.</div>
-            <div class="btn-jouer">En développement</div>
+            <div class="info-jeu">Un nouveau jeu de déduction et de rôles secrets arrive prochainement dans la salle.</div>
+            <span class="btn-jouer">En développement</span>
         </a>
 
     </main>
+
+    <footer>&copy; SALLE D'ARCADE — HIGH SCORE 999999</footer>
 
 </body>
 </html>
