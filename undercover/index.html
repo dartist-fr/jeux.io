@@ -113,66 +113,153 @@
 <script>
 
 var BUILTIN_PAIRS = [
+  // --- NOURRITURE (14) ---
   { theme:"Nourriture", difficulty:"facile", civil:"Pizza", undercover:"Burger" },
   { theme:"Nourriture", difficulty:"facile", civil:"Chocolat", undercover:"Bonbon" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Frite", undercover:"Chips" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Pomme", undercover:"Poire" },
   { theme:"Nourriture", difficulty:"moyen", civil:"Croissant", undercover:"Baguette" },
   { theme:"Nourriture", difficulty:"moyen", civil:"Fromage", undercover:"Yaourt" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Pâtes", undercover:"Riz" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Ketchup", undercover:"Mayonnaise" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Beurre", undercover:"Margarine" },
   { theme:"Nourriture", difficulty:"difficile", civil:"Tarte", undercover:"Quiche" },
   { theme:"Nourriture", difficulty:"difficile", civil:"Crêpe", undercover:"Gaufre" },
-  { theme:"Animaux", difficulty:"facile", civil:"Chien", undercover:"Chat" },
-  { theme:"Animaux", difficulty:"facile", civil:"Lion", undercover:"Tigre" },
-  { theme:"Animaux", difficulty:"moyen", civil:"Aigle", undercover:"Faucon" },
-  { theme:"Animaux", difficulty:"moyen", civil:"Dauphin", undercover:"Requin" },
-  { theme:"Animaux", difficulty:"difficile", civil:"Corbeau", undercover:"Corneille" },
-  { theme:"Animaux", difficulty:"difficile", civil:"Alpaga", undercover:"Lama" },
-  { theme:"Sport", difficulty:"facile", civil:"Football", undercover:"Basketball" },
-  { theme:"Sport", difficulty:"facile", civil:"Natation", undercover:"Plongée" },
-  { theme:"Sport", difficulty:"moyen", civil:"Tennis", undercover:"Badminton" },
-  { theme:"Sport", difficulty:"moyen", civil:"Rugby", undercover:"Football américain" },
-  { theme:"Sport", difficulty:"difficile", civil:"Escalade", undercover:"Alpinisme" },
-  { theme:"Sport", difficulty:"difficile", civil:"Judo", undercover:"Karaté" },
-  { theme:"Métiers", difficulty:"facile", civil:"Médecin", undercover:"Infirmier" },
-  { theme:"Métiers", difficulty:"facile", civil:"Professeur", undercover:"Journaliste" },
-  { theme:"Métiers", difficulty:"moyen", civil:"Boulanger", undercover:"Pâtissier" },
-  { theme:"Métiers", difficulty:"moyen", civil:"Architecte", undercover:"Ingénieur" },
-  { theme:"Métiers", difficulty:"difficile", civil:"Comptable", undercover:"Auditeur" },
-  { theme:"Métiers", difficulty:"difficile", civil:"Community manager", undercover:"Chargé de communication" },
-  { theme:"Objets", difficulty:"facile", civil:"Téléphone", undercover:"Ordinateur" },
-  { theme:"Objets", difficulty:"facile", civil:"Parapluie", undercover:"Chapeau" },
-  { theme:"Objets", difficulty:"moyen", civil:"Stylo", undercover:"Crayon" },
-  { theme:"Objets", difficulty:"moyen", civil:"Valise", undercover:"Sac à dos" },
-  { theme:"Objets", difficulty:"difficile", civil:"Fourchette", undercover:"Cuillère" },
-  { theme:"Objets", difficulty:"difficile", civil:"Bougie", undercover:"Lampe" },
-  { theme:"Lieux", difficulty:"facile", civil:"Plage", undercover:"Montagne" },
-  { theme:"Lieux", difficulty:"facile", civil:"École", undercover:"Bibliothèque" },
-  { theme:"Lieux", difficulty:"moyen", civil:"Stade", undercover:"Gymnase" },
-  { theme:"Lieux", difficulty:"moyen", civil:"Musée", undercover:"Galerie d'art" },
-  { theme:"Lieux", difficulty:"difficile", civil:"Aéroport", undercover:"Gare" },
-  { theme:"Lieux", difficulty:"difficile", civil:"Chalet", undercover:"Cabane" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Moutarde", undercover:"Wasabi" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Raclette", undercover:"Fondue" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Confiture", undercover:"Miel" },
+
+  // --- BOISSONS (10) ---
   { theme:"Boissons", difficulty:"facile", civil:"Café", undercover:"Thé" },
   { theme:"Boissons", difficulty:"facile", civil:"Eau", undercover:"Jus d'orange" },
+  { theme:"Boissons", difficulty:"facile", civil:"Chocolat chaud", undercover:"Cappuccino" },
   { theme:"Boissons", difficulty:"moyen", civil:"Vin", undercover:"Champagne" },
   { theme:"Boissons", difficulty:"moyen", civil:"Smoothie", undercover:"Milkshake" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Bière", undercover:"Panaché" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Sirop", undercover:"Limonade" },
   { theme:"Boissons", difficulty:"difficile", civil:"Cidre", undercover:"Poiré" },
   { theme:"Boissons", difficulty:"difficile", civil:"Limonade", undercover:"Soda" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Cocktail", undercover:"Mocktail" },
+
+  // --- ANIMAUX (14) ---
+  { theme:"Animaux", difficulty:"facile", civil:"Chien", undercover:"Chat" },
+  { theme:"Animaux", difficulty:"facile", civil:"Lion", undercover:"Tigre" },
+  { theme:"Animaux", difficulty:"facile", civil:"Cheval", undercover:"Âne" },
+  { theme:"Animaux", difficulty:"facile", civil:"Vache", undercover:"Chèvre" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Aigle", undercover:"Faucon" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Dauphin", undercover:"Requin" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Abeille", undercover:"Guêpe" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Loup", undercover:"Renard" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Lapin", undercover:"Lièvre" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Corbeau", undercover:"Corneille" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Alpaga", undercover:"Lama" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Crapaud", undercover:"Grenouille" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Chameau", undercover:"Dromadaire" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Poulpe", undercover:"Calmar" },
+
+  // --- SPORT (12) ---
+  { theme:"Sport", difficulty:"facile", civil:"Football", undercover:"Basketball" },
+  { theme:"Sport", difficulty:"facile", civil:"Natation", undercover:"Plongée" },
+  { theme:"Sport", difficulty:"facile", civil:"Course", undercover:"Marche" },
+  { theme:"Sport", difficulty:"moyen", civil:"Tennis", undercover:"Badminton" },
+  { theme:"Sport", difficulty:"moyen", civil:"Rugby", undercover:"Football américain" },
+  { theme:"Sport", difficulty:"moyen", civil:"Ski", undercover:"Snowboard" },
+  { theme:"Sport", difficulty:"moyen", civil:"Pétanque", undercover:"Bowling" },
+  { theme:"Sport", difficulty:"moyen", civil:"Boxe", undercover:"Karaté" },
+  { theme:"Sport", difficulty:"difficile", civil:"Escalade", undercover:"Alpinisme" },
+  { theme:"Sport", difficulty:"difficile", civil:"Judo", undercover:"Karaté" },
+  { theme:"Sport", difficulty:"difficile", civil:"Surf", undercover:"Planche à voile" },
+  { theme:"Sport", difficulty:"difficile", civil:"Kayak", undercover:"Canoë" },
+
+  // --- MÉTIERS (12) ---
+  { theme:"Métiers", difficulty:"facile", civil:"Médecin", undercover:"Infirmier" },
+  { theme:"Métiers", difficulty:"facile", civil:"Professeur", undercover:"Journaliste" },
+  { theme:"Métiers", difficulty:"facile", civil:"Pompier", undercover:"Policier" },
+  { theme:"Métiers", difficulty:"facile", civil:"Acteur", undercover:"Chanteur" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Boulanger", undercover:"Pâtissier" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Architecte", undercover:"Ingénieur" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Juge", undercover:"Avocat" },
+  { theme:"Métiers", difficulty:"moyen", civil:"Plombier", undercover:"Électricien" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Comptable", undercover:"Auditeur" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Community manager", undercover:"Chargé de communication" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Pilote", undercover:"Conducteur de train" },
+  { theme:"Métiers", difficulty:"difficile", civil:"Dentiste", undercover:"Orthodontiste" },
+
+  // --- OBJETS (12) ---
+  { theme:"Objets", difficulty:"facile", civil:"Téléphone", undercover:"Ordinateur" },
+  { theme:"Objets", difficulty:"facile", civil:"Parapluie", undercover:"Chapeau" },
+  { theme:"Objets", difficulty:"facile", civil:"Montre", undercover:"Horloge" },
+  { theme:"Objets", difficulty:"facile", civil:"Clé", undercover:"Cadenas" },
+  { theme:"Objets", difficulty:"moyen", civil:"Stylo", undercover:"Crayon" },
+  { theme:"Objets", difficulty:"moyen", civil:"Valise", undercover:"Sac à dos" },
+  { theme:"Objets", difficulty:"moyen", civil:"Lunettes", undercover:"Lentilles" },
+  { theme:"Objets", difficulty:"moyen", civil:"Miroir", undercover:"Vitre" },
+  { theme:"Objets", difficulty:"difficile", civil:"Fourchette", undercover:"Cuillère" },
+  { theme:"Objets", difficulty:"difficile", civil:"Bougie", undercover:"Lampe" },
+  { theme:"Objets", difficulty:"difficile", civil:"Clé USB", undercover:"Disque dur" },
+  { theme:"Objets", difficulty:"difficile", civil:"Ciseaux", undercover:"Cutter" },
+
+  // --- LIEUX & GÉOGRAPHIE (12) ---
+  { theme:"Lieux", difficulty:"facile", civil:"Plage", undercover:"Montagne" },
+  { theme:"Lieux", difficulty:"facile", civil:"École", undercover:"Bibliothèque" },
+  { theme:"Lieux", difficulty:"facile", civil:"Hôtel", undercover:"Camping" },
+  { theme:"Lieux", difficulty:"facile", civil:"Château", undercover:"Palais" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Stade", undercover:"Gymnase" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Musée", undercover:"Galerie d'art" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Supermarché", undercover:"Marché" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Restaurant", undercover:"Bistrot" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Aéroport", undercover:"Gare" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Chalet", undercover:"Cabane" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Zoo", undercover:"Aquarium" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Désert", undercover:"Savane" },
+
+  // --- TRANSPORT (10) ---
   { theme:"Transport", difficulty:"facile", civil:"Voiture", undercover:"Vélo" },
   { theme:"Transport", difficulty:"facile", civil:"Avion", undercover:"Train" },
+  { theme:"Transport", difficulty:"facile", civil:"Bateau", undercover:"Sous-marin" },
   { theme:"Transport", difficulty:"moyen", civil:"Trottinette", undercover:"Skateboard" },
   { theme:"Transport", difficulty:"moyen", civil:"Bus", undercover:"Tramway" },
+  { theme:"Transport", difficulty:"moyen", civil:"Moto", undercover:"Scooter" },
+  { theme:"Transport", difficulty:"moyen", civil:"TGV", undercover:"TER" },
   { theme:"Transport", difficulty:"difficile", civil:"Métro", undercover:"RER" },
   { theme:"Transport", difficulty:"difficile", civil:"Voilier", undercover:"Catamaran" },
+  { theme:"Transport", difficulty:"difficile", civil:"Hélicoptère", undercover:"Drone" },
+
+  // --- DIVERTISSEMENT & CULTURE (10) ---
   { theme:"Divertissement", difficulty:"facile", civil:"Cinéma", undercover:"Théâtre" },
   { theme:"Divertissement", difficulty:"facile", civil:"Concert", undercover:"Festival" },
+  { theme:"Divertissement", difficulty:"facile", civil:"Cirque", undercover:"Parc d'attraction" },
   { theme:"Divertissement", difficulty:"moyen", civil:"Jeu vidéo", undercover:"Jeu de société" },
   { theme:"Divertissement", difficulty:"moyen", civil:"Roman", undercover:"Bande dessinée" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Série", undercover:"Film" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Peinture", undercover:"Sculpture" },
   { theme:"Divertissement", difficulty:"difficile", civil:"Podcast", undercover:"Radio" },
-  { theme:"Divertissement", difficulty:"difficile", civil:"Stand-up", undercover:"Improvisation" }
+  { theme:"Divertissement", difficulty:"difficile", civil:"Stand-up", undercover:"Improvisation" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Opéra", undercover:"Comédie musicale" },
+
+  // --- VÊTEMENTS & MODE (8) ---
+  { theme:"Vêtements", difficulty:"facile", civil:"Pantalon", undercover:"Short" },
+  { theme:"Vêtements", difficulty:"facile", civil:"Manteau", undercover:"Veste" },
+  { theme:"Vêtements", difficulty:"moyen", civil:"Chaussures", undercover:"Baskets" },
+  { theme:"Vêtements", difficulty:"moyen", civil:"Chemise", undercover:"Polo" },
+  { theme:"Vêtements", difficulty:"moyen", civil:"Écharpe", undercover:"Foulard" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Bonnet", undercover:"Casquette" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Costume", undercover:"Smoking" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Gants", undercover:"Moufles" },
+
+  // --- ESPIONNAGE & ENQUÊTE (6) ---
+  { theme:"Espionnage", difficulty:"facile", civil:"Espion", undercover:"Détective" },
+  { theme:"Espionnage", difficulty:"facile", civil:"Prison", undercover:"Tribunal" },
+  { theme:"Espionnage", difficulty:"moyen", civil:"Empreinte", undercover:"ADN" },
+  { theme:"Espionnage", difficulty:"moyen", civil:"Micro espion", undercover:"Caméra cachée" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Alibi", undercover:"Témoignage" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Poison", undercover:"Somnifère" }
 ];
 
 var ROLE_LABEL = { civil:"Civil", undercover:"Undercover", white:"Mr. White" };
 
 var state = {
-  screen:"setup", // setup | reveal | clues | vote | whiteGuess | eliminationReveal | end
+  screen:"setup",
   playerNames:["Joueur 1","Joueur 2","Joueur 3","Joueur 4"],
   numUndercover:1, numWhite:0,
   theme:"Aléatoire", difficulty:"Aléatoire",
@@ -187,17 +274,35 @@ var state = {
 };
 
 function migrateLibrary(){
+  var currentVersion = "undercover_library_v3";
   var stored = null;
-  try{ var raw = localStorage.getItem("undercover_library"); if(raw) stored = JSON.parse(raw); }catch(e){}
+  try{ var raw = localStorage.getItem(currentVersion); if(raw) stored = JSON.parse(raw); }catch(e){}
   if(stored && stored.length){ state.library = stored; return; }
-  var oldCustom = [];
-  try{ var cp = localStorage.getItem("undercover_custom_pairs"); if(cp) oldCustom = JSON.parse(cp); }catch(e){}
+  
+  var customPairs = [];
+  try{
+    var oldKeys = ["undercover_library", "undercover_library_v2", "undercover_custom_pairs"];
+    oldKeys.forEach(function(key){
+      var oldRaw = localStorage.getItem(key);
+      if(oldRaw){
+        var parsed = JSON.parse(oldRaw);
+        parsed.forEach(function(p){
+          if(p.id && String(p.id).indexOf("c") === 0){
+            var exists = customPairs.some(function(cp){ return cp.civil === p.civil && cp.undercover === p.undercover; });
+            if(!exists) customPairs.push(p);
+          }
+        });
+      }
+    });
+  }catch(e){}
+
   var lib = BUILTIN_PAIRS.map(function(p,i){ return { id:"b"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }; });
-  oldCustom.forEach(function(p,i){ lib.push({ id:"c"+Date.now()+"_"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }); });
+  customPairs.forEach(function(p){ lib.push(p); });
   state.library = lib;
   saveLibrary();
 }
-function saveLibrary(){ try{ localStorage.setItem("undercover_library", JSON.stringify(state.library)); }catch(e){} }
+
+function saveLibrary(){ try{ localStorage.setItem("undercover_library_v3", JSON.stringify(state.library)); }catch(e){} }
 
 function loadStorage(){
   migrateLibrary();
@@ -242,7 +347,7 @@ function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").rep
 function allPairs(){ return state.library; }
 function themesList(){
   var set = {}; allPairs().forEach(function(p){ set[p.theme]=true; });
-  return ["Aléatoire"].concat(Object.keys(set));
+  return ["Aléatoire"].concat(Object.keys(set).sort());
 }
 
 function addPlayer(){
@@ -465,7 +570,7 @@ function renderSetup(){
   html += '<div class="panel"><h2>Mots secrets</h2><div class="grid2">';
   html += '<div><span class="fieldlabel">Thème</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
   html += '<div><span class="fieldlabel">Difficulté</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
-  html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots</button></div>';
+  html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots ('+state.library.length+')</button></div>';
 
   html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Lancer la partie &#8594;</button>';
   if(n<3) html += '<p class="dim center" style="font-size:12px;">Ajoutez au moins 3 joueurs.</p>';
