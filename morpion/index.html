@@ -66,6 +66,29 @@
             mix-blend-mode: multiply;
         }
 
+        /* --- NOUVEAU : Style du bouton Plein Écran --- */
+        .btn-fullscreen {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(11, 6, 22, 0.8);
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            padding: 6px 12px;
+            cursor: pointer;
+            z-index: 200; /* Pour qu'il soit au-dessus de l'effet scanlines */
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .btn-fullscreen:hover {
+            background: rgba(34, 230, 255, 0.2);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-cyan);
+        }
+
         /* --- 2. Conteneur (borne) --- */
         .game-container {
             width: 100%;
@@ -218,6 +241,8 @@
             .cell { font-size: 1.5rem; }
             .status { font-size: 0.6rem; }
             body { background-size: 28px 28px, 28px 28px, 100% 100%, 100% 100%; }
+            /* Ajustement du bouton plein écran sur mobile pour ne pas cacher le titre */
+            .btn-fullscreen { font-size: 1rem; top: 10px; right: 10px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -226,6 +251,9 @@
     </style>
 </head>
 <body>
+
+    <!-- NOUVEAU : Le bouton Plein Écran placé tout en haut -->
+    <button id="fullscreenBtn" class="btn-fullscreen">[ ] Plein écran</button>
 
     <main class="game-container">
         <h1>Morpion</h1>
@@ -263,6 +291,32 @@
     </main>
 
     <script>
+        // --- NOUVEAU : Logique du mode plein écran ---
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+        fullscreenBtn.addEventListener("click", () => {
+            // Si on n'est PAS en plein écran
+            if (!document.fullscreenElement) {
+                // On demande au document entier de prendre tout l'écran
+                document.documentElement.requestFullscreen().catch((err) => {
+                    console.log(`Erreur lors du passage en plein écran: ${err.message}`);
+                });
+                fullscreenBtn.textContent = "[X] Quitter";
+            } else {
+                // Si on y est déjà, on quitte le plein écran
+                document.exitFullscreen();
+                fullscreenBtn.textContent = "[ ] Plein écran";
+            }
+        });
+
+        // Cette sécurité vérifie si l'utilisateur quitte le plein écran avec la touche "Échap"
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement) {
+                fullscreenBtn.textContent = "[ ] Plein écran";
+            }
+        });
+
+
         // --- Variables d'état de la partie ---
         let board = ["", "", "", "", "", "", "", "", ""];
         let currentPlayer = "X";
