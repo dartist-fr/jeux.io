@@ -2,42 +2,184 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <!-- CRUCIAL POUR LE TÉLÉPHONE : Cette ligne adapte le site à la largeur de l'écran -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Catalogue de Jeux</title>
+    <title>Salles des Jeux de Damien</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #0f172a; color: #f8fafc; padding: 40px 20px; }
-        h1 { color: #38bdf8; font-size: 2.5rem; margin-bottom: 10px; }
-        .description { color: #94a3b8; margin-bottom: 40px; }
-        .grid-jeux { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 1000px; margin: 0 auto; }
-        .carte-jeu { background: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 25px; width: 260px; text-decoration: none; color: inherit; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-        .carte-jeu:hover { border-color: #38bdf8; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.15); }
-        .icone { font-size: 3rem; margin-bottom: 15px; }
-        .titre-jeu { font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; color: #f1f5f9; }
-        .info-jeu { font-size: 0.9rem; color: #94a3b8; text-align: center; }
+        /* --- 1. Variables et Reset : Pour un code plus propre --- */
+        :root {
+            --bg-body: #0a0e17; /* Fond encore plus sombre pour le contraste */
+            --bg-card: rgba(30, 41, 59, 0.7); /* Fond de carte transparent */
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8; /* Cyan vibrant pour les accents */
+            --accent-hover: #0ea5e9;
+            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 20px 25px -5px rgba(56, 189, 248, 0.15), 0 10px 10px -5px rgba(56, 189, 248, 0.1);
+        }
+
+        * {
+            box-sizing: border-box; /* Calcule les tailles bordures incluses */
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.08) 0px, transparent 50%);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        /* --- 2. En-tête --- */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #38bdf8, #a78bfa); /* Dégradé moderne */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .description {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- 3. La Grille Responsive (C'est ici que la magie opère !) --- */
+        .grid-jeux {
+            display: grid;
+            /* Crée autant de colonnes de 280px minimum que possible */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px; /* Espace entre les cartes */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- 4. Le Design des Cartes --- */
+        .carte-jeu {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px); /* Effet verre dépoli */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animation fluide */
+            box-shadow: var(--shadow-card);
+        }
+
+        /* Effet au survol (souris) ou au tap (mobile) */
+        .carte-jeu:hover, .carte-jeu:focus {
+            transform: translateY(-10px) scale(1.02); /* Se lève et grossit légèrement */
+            border-color: var(--accent);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .icone {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .carte-jeu:hover .icone {
+            transform: rotate(5deg) scale(1.1); /* Petite animation de l'icône */
+        }
+
+        .titre-jeu {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .info-jeu {
+            font-size: 1rem;
+            color: var(--text-muted);
+            flex-grow: 1; /* Pousse le bouton vers le bas */
+            margin-bottom: 25px;
+        }
+
+        /* Petit bouton décoratif en bas de carte */
+        .btn-jouer {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .carte-jeu:hover .btn-jouer {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        /* --- 5. Ajustements spéciaux pour Mobile (petits écrans) --- */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem; /* Titre un peu plus petit sur mobile */
+            }
+            .grid-jeux {
+                gap: 20px; /* Moins d'espace entre les cartes */
+            }
+            .carte-jeu {
+                padding: 25px; /* Un peu moins de padding interne */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1>🎮 Salle d'Arcade</h1>
-    <p class="description">Choisissez un jeu dans la liste ci-dessous pour commencer à jouer :</p>
+    <header>
+        <h1>Salles des Jeux</h1>
+        <p class="description">Bienvenue dans l'espace arcade de Damien. Sélectionnez un jeu pour commencer l'aventure.</p>
+    </header>
 
-    <div class="grid-jeux">
+    <main class="grid-jeux">
         
-        <!-- CARTE DU JEU UNDERCOVER -->
+        <!-- CARTE DU JEU UNDERCOVER (Actif) -->
         <a href="undercover/" class="carte-jeu">
             <div class="icone">🕵️‍♂️</div>
             <div class="titre-jeu">Undercover</div>
-            <div class="info-jeu">Un jeu d'ambiance, de suspicion et de mots secrets. Trouvez l'intrus !</div>
+            <div class="info-jeu">Un jeu d'ambiance et de mots secrets. Trouvez l'intrus avant qu'il ne soit trop tard !</div>
+            <div class="btn-jouer">Jouer maintenant</div>
         </a>
 
-        <!-- CARTE DE VOTRE FUTUR DEUXIÈME JEU -->
-        <a href="#" class="carte-jeu" style="opacity: 0.5; cursor: not-allowed;">
+        <!-- CARTE DE VOTRE FUTUR DEUXIÈME JEU (Désactivé) -->
+        <a href="#" class="carte-jeu" style="opacity: 0.6; cursor: not-allowed;">
             <div class="icone">⏳</div>
-            <div class="titre-jeu">Prochain Jeu</div>
-            <div class="info-jeu">En cours de développement... Restez connectés !</div>
+            <div class="titre-jeu">Prochain Projet</div>
+            <div class="info-jeu">Un nouveau défi est en cours de création. Revenez bientôt !</div>
+            <div class="btn-jouer">En développement</div>
         </a>
 
-    </div>
+    </main>
 
 </body>
 </html>
