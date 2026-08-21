@@ -3,105 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#14170f">
+<meta name="theme-color" content="#131210">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Undercover">
+<meta name="apple-mobile-web-app-title" content="Dossier Undercover">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Undercover — Dossier confidentiel</title>
+<title>Undercover — Dossier d'enquête confidentiel</title>
 <style>
   :root{
-    --bg:#14170f; --panel:#1c2016; --panel-alt:#23281a;
-    --ink:#ede7d3; --ink2:#ded6bd; --dim:#9aa084; --faint:#5f6650;
-    --border:#3a4028; --red:#a3231f; --olive:#55631f;
+    /* Dossier noir — mode sombre */
+    --bg:#131210; --panel:#1c1a16; --panel-alt:#262319;
+    --ink:#eae3d2; --ink2:#d8cfb8; --dim:#a99a7a; --faint:#6f664f;
+    --border:#3b3527; --red:#b1332c; --olive:#788634;
+    --paper-line:rgba(255,255,255,0.015);
   }
   :root[data-theme="light"]{
-    --bg:#ede7d3; --panel:#e2dab9; --panel-alt:#d7cda3;
-    --ink:#1c2016; --ink2:#2b2f1e; --dim:#5c6047; --faint:#83805f;
-    --border:#c3b98f; --red:#a3231f; --olive:#4a5719;
+    /* Chemise kraft — mode clair */
+    --bg:#cdbf9c; --panel:#e6dcc0; --panel-alt:#dacda8;
+    --ink:#241f17; --ink2:#352e20; --dim:#6a5f45; --faint:#8f8564;
+    --border:#b3a578; --red:#9e2a24; --olive:#556021;
+    --paper-line:rgba(0,0,0,0.025);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  html,body{margin:0;padding:0;color:var(--ink);
+    background:
+      repeating-linear-gradient(0deg, var(--paper-line) 0, var(--paper-line) 1px, transparent 1px, transparent 26px),
+      var(--bg);
+    font-family:Georgia,'Times New Roman',serif;
     -webkit-tap-highlight-color:transparent;
     height:100%;transition:background 0.15s,color 0.15s;}
   body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
-  .display{font-family:'Courier New',Courier,monospace;letter-spacing:0.04em;}
+  .display{font-family:'Courier New',Courier,monospace;letter-spacing:0.06em;font-weight:700;text-transform:uppercase;}
+  .mono{font-family:'Courier New',Courier,monospace;}
   #app{max-width:520px;margin:0 auto;padding:16px;min-height:100vh;}
-  header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid var(--border);}
-  h1{font-size:22px;margin:0;color:var(--ink);}
-  .subtitle{font-size:11px;color:var(--dim);font-family:'Courier New',monospace;margin-top:2px;letter-spacing:0.05em;}
-  .iconbtn{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:4px;}
-  .iconbtn:active{color:var(--ink);}
+
+  /* En-tête : bandeau de dossier classé */
+  header{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding:14px 14px 16px;margin-bottom:20px;
+    background:var(--panel);border:1px solid var(--border);border-left:5px solid var(--red);border-radius:4px;
+    box-shadow:0 2px 0 rgba(0,0,0,0.15);}
+  h1{font-size:20px;margin:0;color:var(--ink);}
+  .subtitle{font-size:10px;color:var(--dim);font-family:'Courier New',monospace;margin-top:4px;letter-spacing:0.12em;text-transform:uppercase;}
+  .casetag{display:inline-block;margin-top:8px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;
+    color:var(--red);border:1px solid var(--red);border-radius:2px;padding:2px 6px;text-transform:uppercase;}
+  .iconbtn{background:none;border:1px solid var(--border);color:var(--dim);font-size:16px;cursor:pointer;padding:4px 7px;border-radius:3px;}
+  .iconbtn:active{color:var(--ink);background:var(--panel-alt);}
   .headerbtns{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
   .themebtn{display:flex;align-items:center;gap:5px;background:none;border:1px solid var(--border);
-    color:var(--dim);font-size:11px;cursor:pointer;padding:5px 9px;border-radius:6px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:0.04em;}
+    color:var(--dim);font-size:10px;cursor:pointer;padding:5px 9px;border-radius:3px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:0.06em;}
   .themebtn:active{background:var(--panel-alt);}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;}
-  .panel h2{font-size:13px;letter-spacing:0.08em;color:var(--ink2);margin:0 0 12px;font-family:'Courier New',monospace;text-transform:uppercase;}
+
+  /* Fiches du dossier */
+  .panel{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:4px;
+    padding:18px;margin-bottom:16px;box-shadow:0 1px 0 rgba(0,0,0,0.12);}
+  .panel h2{position:relative;display:inline-block;font-size:12px;letter-spacing:0.12em;color:var(--ink2);
+    margin:0 0 14px;font-family:'Courier New',monospace;text-transform:uppercase;padding-left:16px;}
+  .panel h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+    width:8px;height:8px;background:var(--red);border-radius:1px;}
   .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;}
-  .row span.label{font-size:14px;color:var(--dim);}
+  .row span.label{font-size:15px;color:var(--dim);}
   .stepper{display:flex;align-items:center;gap:12px;}
-  .stepper button{width:32px;height:32px;background:var(--bg);border:1px solid var(--border);color:var(--ink2);border-radius:6px;font-size:16px;cursor:pointer;}
+  .stepper button{width:32px;height:32px;background:var(--bg);border:1px solid var(--border);color:var(--ink2);border-radius:3px;font-size:16px;cursor:pointer;font-family:'Courier New',monospace;}
   .stepper button:active{background:var(--panel-alt);}
-  .stepper .val{width:22px;text-align:center;font-family:'Courier New',monospace;}
+  .stepper .val{width:22px;text-align:center;font-family:'Courier New',monospace;font-size:16px;}
+
   input[type=text],select{
-    width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;
-    color:var(--ink);padding:10px 12px;font-size:15px;outline:none;
+    width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;
+    color:var(--ink);padding:10px 12px;font-size:15px;outline:none;font-family:'Courier New',monospace;
   }
   input[type=text]::placeholder{color:var(--faint);}
-  input[type=text]:focus,select:focus{border-color:var(--olive);}
+  input[type=text]:focus,select:focus{border-color:var(--red);}
+
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:13px 18px;font-size:14px;font-weight:600;letter-spacing:0.04em;
-    text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;border:2px solid var(--border);}
-  .btn-primary{background:var(--olive);border-color:#3a4028;color:#ede7d3;}
+    padding:13px 18px;font-size:13px;font-weight:700;letter-spacing:0.08em;
+    text-transform:uppercase;border-radius:3px;cursor:pointer;width:100%;border:1px solid var(--border);
+    font-family:'Courier New',monospace;}
+  .btn-primary{background:var(--red);border-color:#000;color:#f5efe0;}
   .btn-primary:active{opacity:0.85;}
   .btn-primary:disabled{opacity:0.3;pointer-events:none;}
   .btn-ghost{background:none;border:1px solid var(--border);color:var(--ink2);}
   .btn-ghost:active{background:var(--panel-alt);}
-  .btn-small{width:auto;padding:9px 14px;font-size:12px;}
-  .linkbtn{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;text-decoration:underline;display:block;margin:0 auto;}
+  .btn-small{width:auto;padding:9px 14px;font-size:11px;}
+  .linkbtn{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;text-decoration:underline;display:block;margin:0 auto;font-family:'Courier New',monospace;}
+
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-  .chip{display:flex;align-items:center;gap:6px;background:var(--panel-alt);border:1px solid var(--border);
-    border-radius:6px;padding:6px 10px;font-size:14px;}
+  .chip{display:flex;align-items:center;gap:6px;background:var(--panel-alt);border:1px dashed var(--border);
+    border-radius:3px;padding:6px 10px;font-size:14px;font-family:'Courier New',monospace;}
   .chip button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:0;}
   .inline2{display:flex;gap:8px;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-  .fieldlabel{font-size:11px;color:var(--dim);display:block;margin-bottom:4px;}
+  .fieldlabel{font-size:10px;color:var(--dim);display:block;margin-bottom:5px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:0.08em;}
   .center{text-align:center;}
   .py-lg{padding:44px 18px;}
-  .stamp{display:inline-block;border:3px solid var(--red);color:var(--red);
-    padding:10px 22px;border-radius:6px;font-size:20px;text-transform:uppercase;
-    transform:rotate(-3deg);font-family:'Courier New',monospace;font-weight:bold;}
+
+  /* Tampons de dossier */
+  .stamp{display:inline-block;border:3px double var(--red);color:var(--red);
+    padding:10px 22px;border-radius:4px;font-size:20px;text-transform:uppercase;
+    transform:rotate(-3deg);font-family:'Courier New',monospace;font-weight:bold;letter-spacing:0.05em;
+    box-shadow:inset 0 0 0 2px var(--panel);}
   .stamp.olive{border-color:var(--olive);color:var(--olive);}
   .stamp.sm{font-size:12px;padding:5px 12px;border-width:2px;}
   .stamp.md{font-size:14px;padding:7px 15px;border-width:2px;}
+
   .redacted{display:flex;gap:4px;justify-content:center;margin:18px 0;}
-  .redacted div{height:8px;background:var(--bg);width:26px;}
-  .wordbig{font-size:30px;color:var(--ink);font-family:'Courier New',monospace;margin-top:6px;}
+  .redacted div{height:10px;background:var(--ink);opacity:0.85;width:26px;border-radius:1px;}
+  .wordbig{font-size:30px;color:var(--ink);font-family:'Courier New',monospace;margin-top:6px;letter-spacing:0.04em;}
   .dim{color:var(--dim);}
   .faint{color:var(--faint);}
-  .mono{font-family:'Courier New',monospace;}
   .mt6{margin-top:6px;}.mt10{margin-top:10px;}.mt16{margin-top:16px;}.mt24{margin-top:24px;}.mb10{margin-bottom:10px;}
+
   .voteitem{width:100%;display:flex;align-items:center;justify-content:space-between;
-    padding:13px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--ink);
-    font-size:15px;text-align:left;cursor:pointer;margin-bottom:8px;}
-  .voteitem.selected{border-color:var(--red);background:var(--panel-alt);}
-  .clueChip{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);color:var(--dim);}
-  .clueChip.current{border-color:var(--olive);color:var(--ink);}
-  .clueChip.done{color:var(--faint);}
+    padding:13px 16px;border-radius:3px;border:1px solid var(--border);background:var(--bg);color:var(--ink);
+    font-size:15px;text-align:left;cursor:pointer;margin-bottom:8px;font-family:'Courier New',monospace;}
+  .voteitem.selected{border-color:var(--red);border-left:4px solid var(--red);background:var(--panel-alt);}
+
+  .clueChip{font-size:12px;padding:5px 10px;border-radius:3px;border:1px solid var(--border);color:var(--dim);font-family:'Courier New',monospace;}
+  .clueChip.current{border-color:var(--red);color:var(--ink);}
+  .clueChip.done{color:var(--faint);text-decoration:line-through;}
   .flexwrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
   .split{display:flex;justify-content:space-around;text-align:center;}
-  .split .num{font-size:22px;}
-  .listrow{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:5px 0;}
+  .split .num{font-size:22px;font-family:'Courier New',monospace;}
+  .listrow{display:flex;align-items:center;justify-content:space-between;font-size:15px;padding:6px 0;border-bottom:1px dotted var(--border);}
+  .listrow:last-child{border-bottom:none;}
   .strike{color:var(--faint);text-decoration:line-through;}
   .histrow{border-bottom:1px solid var(--panel-alt);padding-bottom:8px;margin-bottom:8px;}
   .histrow:last-child{border-bottom:none;}
-  .warn{color:#e0827f;font-size:12px;margin-top:8px;}
+  .warn{color:#e0827f;font-size:12px;margin-top:8px;font-family:'Courier New',monospace;}
   .toprow{display:flex;justify-content:space-between;align-items:center;}
-  .libraryrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--panel-alt);}
+  .libraryrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dotted var(--border);}
   .libraryrow:last-child{border-bottom:none;}
-  .libwords{font-size:14px;flex:1;min-width:0;}
+  .libwords{font-size:14px;flex:1;min-width:0;font-family:'Courier New',monospace;}
   .libcontrols{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .libSelect{width:auto;min-width:110px;padding:6px 8px;font-size:12px;}
   .libcontrols button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;padding:2px;}
@@ -279,7 +310,7 @@ function migrateLibrary(){
   var stored = null;
   try{ var raw = localStorage.getItem(currentVersion); if(raw) stored = JSON.parse(raw); }catch(e){}
   if(stored && stored.length){ state.library = stored; return; }
-  
+
   var customPairs = [];
   try{
     var oldKeys = ["undercover_library", "undercover_library_v2", "undercover_custom_pairs"];
@@ -377,7 +408,7 @@ function toggleGameMaster(){
 function startGame(){
   var pair = null;
 
-  // Récupération des choix si le mode Game Master est actif
+  // Récupération des choix si le mode Meneur d'enquête est actif
   if(state.isGameMaster){
     var gmCiv = document.getElementById("gmCivil");
     var gmUnd = document.getElementById("gmUndercover");
@@ -385,7 +416,7 @@ function startGame(){
     if(gmUnd) state.customUndercover = gmUnd.value.trim();
 
     if(!state.customCivil || !state.customUndercover){
-      alert("Veuillez renseigner les deux mots pour le mode Game Master.");
+      alert("Veuillez renseigner les deux mots pour le mode Meneur d'enquête.");
       return;
     }
     pair = { theme:"Personnalisé", difficulty:"Custom", civil:state.customCivil, undercover:state.customUndercover };
@@ -536,13 +567,13 @@ function moveLibraryPair(id, newTheme){
 function render(){
   var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
   var html = "";
-  html += '<header><div><h1 class="display">UNDERCOVER</h1><div class="subtitle">DOSSIER CONFIDENTIEL — JEU DE DÉDUCTION</div></div>';
+  html += '<header><div><h1 class="display">Dossier &middot; Undercover</h1><div class="subtitle">Enquête confidentielle &mdash; jeu de déduction</div><span class="casetag">Affaire N&deg; 0047 &mdash; Classé secret</span></div>';
   html += '<div class="headerbtns">';
   if(state.screen==="setup" && !state.showLibrary && !state.showStats){
-    html += '<button class="iconbtn" onclick="openLibrary()" aria-label="Bibliothèque">&#128214;</button>';
-    html += '<button class="iconbtn" onclick="openStats()" aria-label="Historique">&#8635;</button>';
+    html += '<button class="iconbtn" onclick="openLibrary()" aria-label="Archives des indices">&#128193;</button>';
+    html += '<button class="iconbtn" onclick="openStats()" aria-label="Registre des affaires">&#128220;</button>';
   }
-  html += '<button class="themebtn" onclick="toggleTheme()">'+(state.themeMode==="dark" ? "&#9728; Clair" : "&#9789; Sombre")+'</button>';
+  html += '<button class="themebtn" onclick="toggleTheme()">'+(state.themeMode==="dark" ? "&#9728; Jour" : "&#9789; Nuit")+'</button>';
   html += '<button class="themebtn" onclick="toggleFullscreen()">'+(isFs ? "&#10005; Quitter" : "&#9974; Plein écran")+'</button>';
   html += '</div></header>';
 
@@ -579,60 +610,60 @@ function renderSetup(){
   var diffOpts = diffs.map(function(d){ return '<option value="'+d+'"'+(d===state.difficulty?" selected":"")+'>'+d+'</option>'; }).join("");
 
   var html = "";
-  html += '<div class="panel"><h2>Joueurs ('+n+')</h2><div class="chips">'+chips+'</div>';
-  html += '<div class="inline2"><input type="text" id="nameInput" placeholder="Nom du joueur"><button class="btn btn-ghost btn-small" onclick="addPlayer()">+</button></div></div>';
+  html += '<div class="panel"><h2>Suspects ('+n+')</h2><div class="chips">'+chips+'</div>';
+  html += '<div class="inline2"><input type="text" id="nameInput" placeholder="Nom du suspect"><button class="btn btn-ghost btn-small" onclick="addPlayer()">+</button></div></div>';
 
   html += '<div class="panel"><h2>Infiltrés</h2>';
-  html += '<div class="row"><span class="label">Undercover</span><div class="stepper"><button onclick="changeUndercover(-1)">−</button><span class="val mono">'+state.numUndercover+'</span><button onclick="changeUndercover(1)">+</button></div></div>';
-  html += '<div class="row"><span class="label">Mr. White</span><div class="stepper"><button onclick="changeWhite(-1)">−</button><span class="val mono">'+state.numWhite+'</span><button onclick="changeWhite(1)">+</button></div></div>';
-  html += '<div class="mono dim" style="font-size:12px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">'+numCivils+' civil'+(numCivils>1?"s":"")+' · '+state.numUndercover+' undercover · '+state.numWhite+' mr. white</div>';
-  if(tooMany) html += '<div class="warn">Trop d\'infiltrés pour '+n+' joueurs — les civils doivent rester majoritaires.</div>';
+  html += '<div class="row"><span class="label">Undercover</span><div class="stepper"><button onclick="changeUndercover(-1)">&minus;</button><span class="val mono">'+state.numUndercover+'</span><button onclick="changeUndercover(1)">+</button></div></div>';
+  html += '<div class="row"><span class="label">Mr. White</span><div class="stepper"><button onclick="changeWhite(-1)">&minus;</button><span class="val mono">'+state.numWhite+'</span><button onclick="changeWhite(1)">+</button></div></div>';
+  html += '<div class="mono dim" style="font-size:12px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">'+numCivils+' civil'+(numCivils>1?"s":"")+' &middot; '+state.numUndercover+' undercover &middot; '+state.numWhite+' mr. white</div>';
+  if(tooMany) html += '<div class="warn">Trop d\'infiltrés pour '+n+' suspects — les civils doivent rester majoritaires.</div>';
   html += '</div>';
 
-  // --- SECTION MOTS SECRETS & MODE GAME MASTER ---
+  // --- SECTION MOTS SECRETS & MODE MENEUR D'ENQUÊTE ---
   html += '<div class="panel">';
-  html += '<div class="toprow mb10"><h2>Mots secrets</h2>';
+  html += '<div class="toprow mb10"><h2>Mots codés</h2>';
   html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;" class="dim mono">';
-  html += '<input type="checkbox" '+(state.isGameMaster?"checked":"")+' onchange="toggleGameMaster()"> Mode Game Master';
+  html += '<input type="checkbox" '+(state.isGameMaster?"checked":"")+' onchange="toggleGameMaster()"> Mode Meneur d\'enquête';
   html += '</label></div>';
 
   if(state.isGameMaster){
-    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;">Définissez manuellement les mots pour cette partie :</p>';
+    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;">Définissez manuellement les mots pour cette affaire :</p>';
     html += '<div class="grid2">';
     html += '<div><span class="fieldlabel">Mot des Civils</span><input type="text" id="gmCivil" value="'+esc(state.customCivil)+'" placeholder="ex: Soleil" oninput="state.customCivil=this.value"></div>';
     html += '<div><span class="fieldlabel">Mot des Undercovers</span><input type="text" id="gmUndercover" value="'+esc(state.customUndercover)+'" placeholder="ex: Lune" oninput="state.customUndercover=this.value"></div>';
     html += '</div>';
   } else {
     html += '<div class="grid2">';
-    html += '<div><span class="fieldlabel">Thème</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
-    html += '<div><span class="fieldlabel">Difficulté</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
-    html += '</div><button class="linkbtn" onclick="openLibrary()">Gérer la bibliothèque de mots ('+state.library.length+')</button>';
+    html += '<div><span class="fieldlabel">Dossier</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
+    html += '<div><span class="fieldlabel">Niveau</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
+    html += '</div><button class="linkbtn" onclick="openLibrary()">Consulter les archives d\'indices ('+state.library.length+')</button>';
   }
   html += '</div>';
 
-  html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Lancer la partie &#8594;</button>';
-  if(n<3) html += '<p class="dim center" style="font-size:12px;">Ajoutez au moins 3 joueurs.</p>';
+  html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Ouvrir l\'enquête &#8594;</button>';
+  if(n<3) html += '<p class="dim center" style="font-size:12px;">Réunissez au moins 3 suspects.</p>';
   return html;
 }
 
 function renderReveal(){
   var p = state.players[state.revealIndex];
-  var html = '<p class="center mono dim" style="font-size:12px;">JOUEUR '+(state.revealIndex+1)+' / '+state.players.length+'</p>';
+  var html = '<p class="center mono dim" style="font-size:12px;">DÉPOSITION '+(state.revealIndex+1)+' / '+state.players.length+'</p>';
   html += '<div class="panel center py-lg">';
   if(!state.revealed){
-    html += '<p class="dim" style="font-size:14px;">Passez l\'appareil à</p>';
+    html += '<p class="dim" style="font-size:14px;">Remettez le dossier à</p>';
     html += '<p class="display" style="font-size:24px;margin:6px 0 20px;">'+esc(p.name)+'</p>';
     html += '<div class="redacted"><div></div><div></div><div></div><div></div></div>';
-    html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="revealCard()">&#128065; Voir mon rôle</button>';
+    html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="revealCard()">&#128065; Ouvrir mon dossier</button>';
   } else {
     var cls = p.role==="civil" ? "stamp olive" : "stamp";
     html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
     if(p.role==="white"){
-      html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Vous n\'avez aucun mot. Écoutez les autres et bluffez pour ne pas être démasqué.</p>';
+      html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
     } else {
-      html += '<p class="dim mt16" style="font-size:12px;">Votre mot</p><p class="wordbig">'+esc(p.word)+'</p>';
+      html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
     }
-    html += '<button class="btn btn-ghost mt24" style="width:auto;padding:11px 20px;" onclick="nextReveal()">J\'ai vu, cacher et passer</button>';
+    html += '<button class="btn btn-ghost mt24" style="width:auto;padding:11px 20px;" onclick="nextReveal()">Vu — refermer le dossier</button>';
   }
   html += '</div>';
   return html;
@@ -642,12 +673,12 @@ function renderClues(){
   var order = aliveClueOrder();
   var currentId = order[state.clueTurn];
   var current = state.players.find(function(p){return p.id===currentId;});
-  var html = '<div class="toprow"><div class="stamp sm">Round '+state.round+'</div><span class="mono dim" style="font-size:12px;">'+(state.clueTurn+1)+' / '+order.length+'</span></div>';
+  var html = '<div class="toprow"><div class="stamp sm">Manche '+state.round+'</div><span class="mono dim" style="font-size:12px;">'+(state.clueTurn+1)+' / '+order.length+'</span></div>';
   html += '<div class="panel center py-lg" style="margin-top:16px;">';
-  html += '<p class="dim" style="font-size:14px;">C\'est au tour de</p>';
+  html += '<p class="dim" style="font-size:14px;">Déposition de</p>';
   html += '<p class="display" style="font-size:24px;margin:4px 0;">'+esc(current.name)+'</p>';
-  html += '<p class="dim" style="font-size:12px;margin-bottom:20px;">de donner son indice à voix haute</p>';
-  html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="nextClueTurn()">Indice donné &#8250;</button>';
+  html += '<p class="dim" style="font-size:12px;margin-bottom:20px;">livrez votre indice à voix haute</p>';
+  html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="nextClueTurn()">Indice consigné &#8250;</button>';
   html += '</div>';
   html += '<div class="flexwrap">';
   order.forEach(function(id,i){
@@ -656,21 +687,21 @@ function renderClues(){
     html += '<span class="'+cls+'">'+esc(p.name)+'</span>';
   });
   html += '</div>';
-  html += '<button class="linkbtn mt16" onclick="goToVote()">Passer directement au vote</button>';
+  html += '<button class="linkbtn mt16" onclick="goToVote()">Passer directement à l\'interrogatoire</button>';
   return html;
 }
 
 function renderVote(){
   var alive = state.players.filter(function(p){return p.alive;});
-  var html = '<div class="stamp sm">Round '+state.round+' — Vote</div>';
-  html += '<p class="dim mt10" style="font-size:14px;">Les joueurs ont débattu et voté à l\'oral. Sélectionnez le joueur éliminé.</p>';
+  var html = '<div class="stamp sm">Manche '+state.round+' — Interrogatoire</div>';
+  html += '<p class="dim mt10" style="font-size:14px;">Les suspects ont débattu et voté à l\'oral. Désignez le suspect mis en accusation.</p>';
   html += '<div class="mt16">';
   alive.forEach(function(p){
     var sel = state.selectedVote===p.id;
     html += '<button class="voteitem'+(sel?" selected":"")+'" onclick="selectVote('+p.id+')"><span>'+esc(p.name)+'</span>'+(sel?'<span>&#10003;</span>':'')+'</button>';
   });
   html += '</div>';
-  html += '<button class="btn btn-primary" '+(state.selectedVote==null?"disabled":"")+' onclick="confirmVote()">&#128128; Confirmer l\'élimination</button>';
+  html += '<button class="btn btn-primary" '+(state.selectedVote==null?"disabled":"")+' onclick="confirmVote()">&#128128; Confirmer l\'inculpation</button>';
   return html;
 }
 
@@ -679,9 +710,9 @@ function renderWhiteGuess(){
   var html = '<div class="panel center py-lg">';
   html += '<div class="stamp md">Mr. White démasqué</div>';
   html += '<p class="mt16" style="font-size:15px;">'+esc(p.name)+', dernière chance :</p>';
-  html += '<p class="dim mb10" style="font-size:13px;">devinez le mot des civils pour gagner la partie</p>';
-  html += '<input type="text" id="whiteGuessInput" placeholder="Votre réponse" style="text-align:center;">';
-  html += '<button class="btn btn-primary mt16" onclick="submitWhiteGuess()">Valider la réponse</button>';
+  html += '<p class="dim mb10" style="font-size:13px;">devinez le mot des civils pour renverser l\'enquête</p>';
+  html += '<input type="text" id="whiteGuessInput" placeholder="Votre déposition" style="text-align:center;">';
+  html += '<button class="btn btn-primary mt16" onclick="submitWhiteGuess()">Valider la déposition</button>';
   html += '</div>';
   return html;
 }
@@ -696,10 +727,10 @@ function renderEliminationReveal(){
   html += '<p class="dim" style="font-size:14px;">'+esc(p.name)+' était</p>';
   html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
   if(last && last.whiteGuess){
-    html += '<p class="dim mt16" style="font-size:13px;">A proposé « '+esc(last.whiteGuess)+' » — '+(last.whiteCorrect?"correct":"incorrect")+'</p>';
+    html += '<p class="dim mt16" style="font-size:13px;">A déposé « '+esc(last.whiteGuess)+' » — '+(last.whiteCorrect?"correct":"incorrect")+'</p>';
   }
-  html += '<p class="mono faint mt16" style="font-size:11px;">Restent en vie : '+aliveCiv+' civil'+(aliveCiv>1?"s":"")+', '+aliveInf+' infiltré'+(aliveInf>1?"s":"")+'</p>';
-  html += '<button class="btn btn-ghost mt16" style="width:auto;padding:11px 20px;" onclick="proceedAfterElimination()">Continuer</button>';
+  html += '<p class="mono faint mt16" style="font-size:11px;">Encore en liberté : '+aliveCiv+' civil'+(aliveCiv>1?"s":"")+', '+aliveInf+' infiltré'+(aliveInf>1?"s":"")+'</p>';
+  html += '<button class="btn btn-ghost mt16" style="width:auto;padding:11px 20px;" onclick="proceedAfterElimination()">Poursuivre l\'enquête</button>';
   html += '</div>';
   return html;
 }
@@ -709,43 +740,43 @@ function renderEnd(){
   var cls = state.winner==="civils" ? "stamp olive" : "stamp";
   var html = '<div class="panel center py-lg">';
   html += '<div class="'+cls+'">'+label+'</div>';
-  html += '<p class="mono dim mt16" style="font-size:12px;">Partie terminée en '+state.round+' round'+(state.round>1?"s":"")+'</p>';
+  html += '<p class="mono dim mt16" style="font-size:12px;">Affaire classée en '+state.round+' manche'+(state.round>1?"s":"")+'</p>';
   html += '</div>';
 
-  html += '<div class="panel"><h2>Mots de la partie</h2><div class="split">';
+  html += '<div class="panel"><h2>Pièces à conviction</h2><div class="split">';
   html += '<div><p class="dim" style="font-size:12px;">Civils</p><p class="num">'+esc(state.wordPair.civil)+'</p></div>';
   html += '<div><p class="dim" style="font-size:12px;">Undercover</p><p class="num">'+esc(state.wordPair.undercover)+'</p></div>';
   html += '</div></div>';
 
-  html += '<div class="panel"><h2>Récapitulatif</h2>';
+  html += '<div class="panel"><h2>Rapport final</h2>';
   state.players.forEach(function(p){
     html += '<div class="listrow"><span class="'+(p.alive?"":"strike")+'">'+esc(p.name)+'</span><span class="mono dim" style="font-size:12px;">'+ROLE_LABEL[p.role]+'</span></div>';
   });
   if(state.eliminations.length>0){
     html += '<div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;">';
     state.eliminations.forEach(function(e){
-      html += '<p class="dim" style="font-size:12px;margin:4px 0;">Round '+e.round+' — '+esc(e.name)+' éliminé ('+ROLE_LABEL[e.role]+')</p>';
+      html += '<p class="dim" style="font-size:12px;margin:4px 0;">Manche '+e.round+' — '+esc(e.name)+' inculpé ('+ROLE_LABEL[e.role]+')</p>';
     });
     html += '</div>';
   }
   html += '</div>';
 
-  html += '<button class="btn btn-primary" onclick="newGameSamePlayers()">&#8635; Nouvelle partie</button>';
+  html += '<button class="btn btn-primary" onclick="newGameSamePlayers()">&#8635; Nouvelle affaire</button>';
   return html;
 }
 
 function renderLibrary(){
-  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeLibrary()">&#8249; Retour</button>';
-  html += '<div class="panel"><h2>Ajouter un mot</h2>';
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeLibrary()">&#8249; Retour au dossier</button>';
+  html += '<div class="panel"><h2>Nouvel indice</h2>';
   html += '<div class="grid2"><input type="text" id="wmCivil" placeholder="Mot civil"><input type="text" id="wmUndercover" placeholder="Mot undercover"></div>';
-  html += '<div class="grid2"><input type="text" id="wmTheme" placeholder="Thème (existant ou nouveau)"><select id="wmDiff"><option value="facile">facile</option><option value="moyen" selected>moyen</option><option value="difficile">difficile</option></select></div>';
-  html += '<button class="btn btn-ghost" onclick="addLibraryPair()">+ Ajouter à la bibliothèque</button></div>';
+  html += '<div class="grid2"><input type="text" id="wmTheme" placeholder="Dossier (existant ou nouveau)"><select id="wmDiff"><option value="facile">facile</option><option value="moyen" selected>moyen</option><option value="difficile">difficile</option></select></div>';
+  html += '<button class="btn btn-ghost" onclick="addLibraryPair()">+ Classer dans les archives</button></div>';
 
   var groups = {};
   state.library.forEach(function(p){ (groups[p.theme]=groups[p.theme]||[]).push(p); });
   var themeNames = Object.keys(groups).sort();
 
-  html += '<div class="panel"><h2>Bibliothèque ('+state.library.length+' mots)</h2>';
+  html += '<div class="panel"><h2>Archives ('+state.library.length+' indices)</h2>';
   themeNames.forEach(function(t){
     html += '<p class="mono dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 6px;">'+esc(t)+' ('+groups[t].length+')</p>';
     groups[t].forEach(function(p){
@@ -764,21 +795,21 @@ function renderStats(){
   var total = state.gameHistory.length;
   var civilWins = state.gameHistory.filter(function(g){return g.winner==="civils";}).length;
   var infWins = total - civilWins;
-  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeStats()">&#8249; Retour</button>';
-  html += '<div class="panel"><h2>Statistiques</h2><div class="split">';
-  html += '<div><p class="num">'+total+'</p><p class="dim" style="font-size:12px;">parties</p></div>';
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeStats()">&#8249; Retour au dossier</button>';
+  html += '<div class="panel"><h2>Bilan des affaires</h2><div class="split">';
+  html += '<div><p class="num">'+total+'</p><p class="dim" style="font-size:12px;">affaires</p></div>';
   html += '<div><p class="num">'+civilWins+'</p><p class="dim" style="font-size:12px;">civils</p></div>';
   html += '<div><p class="num">'+infWins+'</p><p class="dim" style="font-size:12px;">infiltrés</p></div>';
   html += '</div></div>';
 
-  html += '<div class="panel"><h2>Historique</h2>';
+  html += '<div class="panel"><h2>Registre des affaires</h2>';
   if(total===0){
-    html += '<p class="dim" style="font-size:12px;">Aucune partie enregistrée encore.</p>';
+    html += '<p class="dim" style="font-size:12px;">Aucune affaire archivée pour le moment.</p>';
   } else {
     state.gameHistory.forEach(function(g){
       var w = g.winner==="civils" ? "Civils" : (g.winner==="white" ? "Mr. White" : "Infiltrés");
       html += '<div class="histrow"><div class="toprow"><span>'+w+'</span><span class="mono faint" style="font-size:11px;">'+new Date(g.date).toLocaleDateString("fr-FR")+'</span></div>';
-      html += '<p class="dim" style="font-size:12px;">'+g.players.length+' joueurs · '+g.rounds+' round'+(g.rounds>1?"s":"")+' · mot : '+esc(g.wordPair.civil)+'</p></div>';
+      html += '<p class="dim" style="font-size:12px;">'+g.players.length+' suspects &middot; '+g.rounds+' manche'+(g.rounds>1?"s":"")+' &middot; indice : '+esc(g.wordPair.civil)+'</p></div>';
     });
   }
   html += '</div>';
