@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Morpion — Salle d'Arcade</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(22, 30, 49, 0.8);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-x: #38bdf8; /* Couleur du joueur X */
+            --accent-o: #f43f5e; /* Couleur du joueur O */
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- En-tête et Scores --- */
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .score-x { color: var(--accent-x); }
+        .score-o { color: var(--accent-o); }
+        .score-tie { color: var(--text-sub); }
+
+        .status {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            min-height: 28px;
+            color: var(--text-main);
+        }
+
+        /* --- Grille du Morpion --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .cell {
+            aspect-ratio: 1 / 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .cell:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .cell.x { color: var(--accent-x); border-color: rgba(56, 189, 248, 0.4); }
+        .cell.o { color: var(--accent-o); border-color: rgba(244, 63, 94, 0.4); }
+        .cell.winner {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #22c55e;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.03); }
+        }
+
+        /* --- Boutons d'action --- */
+        .btn-restart {
+            width: 100%;
+            background: #38bdf8;
+            color: #0b0f19;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn-restart:active {
+            transform: translateY(2px);
+            opacity: 0.9;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <main class="game-container">
+        <h1>❌ Morpion ⭕</h1>
+        
+        <!-- Tableau des scores -->
+        <div class="scoreboard">
+            <div>Joueur X : <span id="scoreX" class="score-x">0</span></div>
+            <div>Nuls : <span id="scoreTie" class="score-tie">0</span></div>
+            <div>Joueur O : <span id="scoreO" class="score-o">0</span></div>
+        </div>
+
+        <!-- Indicateur de tour ou vainqueur -->
+        <div class="status" id="statusText">Tour du joueur ❌</div>
+
+        <!-- Grille 3x3 -->
+        <div class="grid" id="grid">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+
+        <!-- Bouton Rejouer -->
+        <button class="btn-restart" onclick="restartRound()">Recommencer la manche</button>
+        
+        <!-- Retour au menu des jeux -->
+        <div>
+            <a href="../" class="back-link">‹ Retour aux jeux</a>
+        </div>
+    </main>
+
+    <script>
+        // --- Variables d'état de la partie ---
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let currentPlayer = "X";
+        let isGameActive = true;
+        let scores = { X: 0, O: 0, ties: 0 };
+
+        // Liste des combinaisons gagnantes (indices dans le tableau board)
+        const WINNING_CONDITIONS = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Lignes
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colonnes
+            [0, 4, 8], [2, 4, 6]             // Diagonales
+        ];
+
+        // Éléments du DOM
+        const statusText = document.getElementById("statusText");
+        const cells = document.querySelectorAll(".cell");
+
+        // --- Gestion du clic sur une case ---
+        function handleCellClick(e) {
+            const clickedCell = e.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute("data-index"));
+
+            // Vérifie si la case est déjà prise ou si la partie est terminée
+            if (board[clickedCellIndex] !== "" || !isGameActive) {
+                return;
+            }
+
+            // Enregistre le coup joué
+            board[clickedCellIndex] = currentPlayer;
+            clickedCell.textContent = currentPlayer === "X" ? "✕" : "◯";
+            clickedCell.classList.add(currentPlayer.toLowerCase());
+
+            checkResult();
+        }
+
+        // --- Vérification du résultat (Victoire, Égalité ou Tour suivant) ---
+        function checkResult() {
+            let roundWon = false;
+            let winningCombo = null;
+
+            for (let i = 0; i < WINNING_CONDITIONS.length; i++) {
+                const [a, b, c] = WINNING_CONDITIONS[i];
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    roundWon = true;
+                    winningCombo = [a, b, c];
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                statusText.innerHTML = `🎉 Le joueur <strong style="color: var(--accent-${currentPlayer.toLowerCase()})">${currentPlayer}</strong> a gagné !`;
+                scores[currentPlayer]++;
+                updateScoreboard();
+                isGameActive = false;
+
+                // Mise en surbrillance des cases gagnantes
+                winningCombo.forEach(index => cells[index].classList.add("winner"));
+                return;
+            }
+
+            // Vérification de match nul (plus aucune case vide)
+            if (!board.includes("")) {
+                statusText.textContent = "Match nul ! 🤝";
+                scores.ties++;
+                updateScoreboard();
+                isGameActive = false;
+                return;
+            }
+
+            // Passage au joueur suivant
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            statusText.innerHTML = `Tour du joueur <strong style="color: var(--accent-${currentPlayer.toLowerCase()})">${currentPlayer === "X" ? "❌" : "⭕"}</strong>`;
+        }
+
+        // --- Mise à jour de l'affichage des scores ---
+        function updateScoreboard() {
+            document.getElementById("scoreX").textContent = scores.X;
+            document.getElementById("scoreO").textContent = scores.O;
+            document.getElementById("scoreTie").textContent = scores.ties;
+        }
+
+        // --- Réinitialisation d'une manche ---
+        function restartRound() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            isGameActive = true;
+            currentPlayer = "X";
+            statusText.innerHTML = `Tour du joueur <strong style="color: var(--accent-x)">❌</strong>`;
+
+            cells.forEach(cell => {
+                cell.textContent = "";
+                cell.className = "cell";
+            });
+        }
+
+        // Écouteurs d'événements sur les 9 cases
+        cells.forEach(cell => cell.addEventListener("click", handleCellClick));
+    </script>
+</body>
+</html>
