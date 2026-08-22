@@ -10,19 +10,16 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Undercover — Dossier d'enquête confidentiel</title>
 <link rel="manifest" href="/jeux.io/manifest.json">
-
-<!-- SDK Firebase (Base de données en temps réel) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
 <style>
   :root{
+    /* Dossier noir — mode sombre */
     --bg:#131210; --panel:#1c1a16; --panel-alt:#262319;
     --ink:#eae3d2; --ink2:#d8cfb8; --dim:#a99a7a; --faint:#6f664f;
     --border:#3b3527; --red:#b1332c; --olive:#788634;
     --paper-line:rgba(255,255,255,0.015);
   }
   :root[data-theme="light"]{
+    /* Chemise kraft — mode clair */
     --bg:#cdbf9c; --panel:#e6dcc0; --panel-alt:#dacda8;
     --ink:#241f17; --ink2:#352e20; --dim:#6a5f45; --faint:#8f8564;
     --border:#b3a578; --red:#9e2a24; --olive:#556021;
@@ -41,6 +38,7 @@
   .mono{font-family:'Courier New',Courier,monospace;}
   #app{max-width:520px;margin:0 auto;padding:16px;min-height:100vh;}
 
+  /* En-tête : bandeau de dossier classé */
   header{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;
     padding:14px 14px 16px;margin-bottom:20px;
     background:var(--panel);border:1px solid var(--border);border-left:5px solid var(--red);border-radius:4px;
@@ -56,6 +54,7 @@
     color:var(--dim);font-size:10px;cursor:pointer;padding:5px 9px;border-radius:3px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:0.06em;}
   .themebtn:active{background:var(--panel-alt);}
 
+  /* Fiches du dossier */
   .panel{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:4px;
     padding:18px;margin-bottom:16px;box-shadow:0 1px 0 rgba(0,0,0,0.12);}
   .panel h2{position:relative;display:inline-block;font-size:12px;letter-spacing:0.12em;color:var(--ink2);
@@ -98,6 +97,7 @@
   .center{text-align:center;}
   .py-lg{padding:44px 18px;}
 
+  /* Tampons de dossier */
   .stamp{display:inline-block;border:3px double var(--red);color:var(--red);
     padding:10px 22px;border-radius:4px;font-size:20px;text-transform:uppercase;
     transform:rotate(-3deg);font-family:'Courier New',monospace;font-weight:bold;letter-spacing:0.05em;
@@ -144,21 +144,243 @@
 <body>
 <div id="app"></div>
 <script>
-// --- INITIALISATION FIREBASE AVEC TES CLÉS ---
-const firebaseConfig = {
-  apiKey: "AIzaSyAcim68zRRkElr4RFth7904VauDZ4c1PjE",
-  authDomain: "jeux-de-soiree-a0a24.firebaseapp.com",
-  projectId: "jeux-de-soiree-a0a24",
-  storageBucket: "jeux-de-soiree-a0a24.appfirebasestorage.app",
-  messagingSenderId: "368823623772",
-  appId: "1:368823623772:web:f9c04274827944c9ca0699"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
 var BUILTIN_PAIRS = [
+  // --- NOURRITURE (40) ---
   { theme:"Nourriture", difficulty:"facile", civil:"Pizza", undercover:"Burger" },
-  { theme:"Nourriture", difficulty:"facile", civil:"Chocolat", undercover:"Bonbon" }
+  { theme:"Nourriture", difficulty:"facile", civil:"Chocolat", undercover:"Bonbon" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Frite", undercover:"Chips" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Pomme", undercover:"Poire" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Pain", undercover:"Biscotte" },
+  { theme:"Nourriture", difficulty:"facile", civil:"Gâteau", undercover:"Tarte" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Croissant", undercover:"Baguette" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Fromage", undercover:"Yaourt" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Pâtes", undercover:"Riz" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Ketchup", undercover:"Mayonnaise" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Beurre", undercover:"Margarine" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Saucisson", undercover:"Jambon" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Lasagne", undercover:"Moussaka" },
+  { theme:"Nourriture", difficulty:"moyen", civil:"Chili con carne", undercover:"Fajitas" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Tarte", undercover:"Quiche" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Crêpe", undercover:"Gaufre" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Moutarde", undercover:"Wasabi" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Raclette", undercover:"Fondue" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Confiture", undercover:"Miel" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Mandarine", undercover:"Clémentine" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Pêche", undercover:"Nectarine" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Marron", undercover:"Châtaigne" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Brie", undercover:"Camembert" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Éclair", undercover:"Religieuse" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Muffin", undercover:"Cupcake" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Sorbet", undercover:"Glace" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Caquelon", undercover:"Marmite" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Béchamel", undercover:"Vinaigrette" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Safran", undercover:"Curcuma" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Meringue", undercover:"Macaron" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Couscous", undercover:"Tajine" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Ail", undercover:"Oignon" },
+  { theme:"Nourriture", difficulty:"difficile", civil:"Sucre", undercover:"Édulcorant" },
+
+  // --- BOISSONS (18) ---
+  { theme:"Boissons", difficulty:"facile", civil:"Café", undercover:"Thé" },
+  { theme:"Boissons", difficulty:"facile", civil:"Eau", undercover:"Jus d'orange" },
+  { theme:"Boissons", difficulty:"facile", civil:"Chocolat chaud", undercover:"Cappuccino" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Vin", undercover:"Champagne" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Smoothie", undercover:"Milkshake" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Bière", undercover:"Panaché" },
+  { theme:"Boissons", difficulty:"moyen", civil:"Sirop", undercover:"Limonade" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Cidre", undercover:"Poiré" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Eau pétillante", undercover:"Eau plate" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Thé vert", undercover:"Thé noir" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Vin rouge", undercover:"Vin blanc" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Whisky", undercover:"Bourbon" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Tisane", undercover:"Infusion" },
+  { theme:"Boissons", difficulty:"difficile", civil:"Kéfir", undercover:"Kombucha" },
+
+  // --- ANIMAUX (30) ---
+  { theme:"Animaux", difficulty:"facile", civil:"Chien", undercover:"Chat" },
+  { theme:"Animaux", difficulty:"facile", civil:"Lion", undercover:"Tigre" },
+  { theme:"Animaux", difficulty:"facile", civil:"Cheval", undercover:"Âne" },
+  { theme:"Animaux", difficulty:"facile", civil:"Vache", undercover:"Chèvre" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Aigle", undercover:"Faucon" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Dauphin", undercover:"Requin" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Abeille", undercover:"Guêpe" },
+  { theme:"Animaux", difficulty:"moyen", civil:"Loup", undercover:"Renard" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Corbeau", undercover:"Corneille" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Alpaga", undercover:"Lama" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Crapaud", undercover:"Grenouille" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Chameau", undercover:"Dromadaire" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Poulpe", undercover:"Calmar" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Pingouin", undercover:"Manchot" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Chouette", undercover:"Hibou" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Alligator", undercover:"Crocodile" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Léopard", undercover:"Guépard" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Mouette", undercover:"Goéland" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Lièvre", undercover:"Lapin" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Orignal", undercover:"Wapiti" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Morses", undercover:"Caribou" },
+  { theme:"Animaux", difficulty:"difficile", civil:"Otarie", undercover:"Phoque" },
+
+  // --- ANATOMIE & CORPS (Nouveau - 10) ---
+  { theme:"Anatomie", difficulty:"moyen", civil:"Cœur", undercover:"Poumon" },
+  { theme:"Anatomie", difficulty:"moyen", civil:"Œil", undercover:"Oreille" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Artère", undercover:"Veine" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Tendon", undercover:"Ligament" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Squelette", undercover:"Os" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Poignet", undercover:"Cheville" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Genou", undercover:"Coude" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Pharynx", undercover:"Larynx" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Crâne", undercover:"Cerveau" },
+  { theme:"Anatomie", difficulty:"difficile", civil:"Molaire", undercover:"Incisive" },
+
+  // --- NATURE & CLIMAT (Nouveau - 15) ---
+  { theme:"Nature", difficulty:"facile", civil:"Pluie", undercover:"Neige" },
+  { theme:"Nature", difficulty:"moyen", civil:"Rivière", undercover:"Lac" },
+  { theme:"Nature", difficulty:"moyen", civil:"Étoile", undercover:"Planète" },
+  { theme:"Nature", difficulty:"difficile", civil:"Stalactite", undercover:"Stalagmite" },
+  { theme:"Nature", difficulty:"difficile", civil:"Tornade", undercover:"Ouragan" },
+  { theme:"Nature", difficulty:"difficile", civil:"Magma", undercover:"Lave" },
+  { theme:"Nature", difficulty:"difficile", civil:"Océan", undercover:"Mer" },
+  { theme:"Nature", difficulty:"difficile", civil:"Fleuve", undercover:"Rivière" },
+  { theme:"Nature", difficulty:"difficile", civil:"Colline", undercover:"Montagne" },
+  { theme:"Nature", difficulty:"difficile", civil:"Grotte", undercover:"Caverne" },
+  { theme:"Nature", difficulty:"difficile", civil:"Marais", undercover:"Marécage" },
+  { theme:"Nature", difficulty:"difficile", civil:"Brume", undercover:"Brouillard" },
+  { theme:"Nature", difficulty:"difficile", civil:"Météore", undercover:"Astéroïde" },
+  { theme:"Nature", difficulty:"difficile", civil:"Avalanche", undercover:"Blizzard" },
+  { theme:"Nature", difficulty:"difficile", civil:"Baie", undercover:"Golfe" },
+
+  // --- SPORT (20) ---
+  { theme:"Sport", difficulty:"facile", civil:"Football", undercover:"Basketball" },
+  { theme:"Sport", difficulty:"facile", civil:"Course", undercover:"Marche" },
+  { theme:"Sport", difficulty:"moyen", civil:"Tennis", undercover:"Badminton" },
+  { theme:"Sport", difficulty:"moyen", civil:"Rugby", undercover:"Football américain" },
+  { theme:"Sport", difficulty:"moyen", civil:"Ski", undercover:"Snowboard" },
+  { theme:"Sport", difficulty:"difficile", civil:"Escalade", undercover:"Alpinisme" },
+  { theme:"Sport", difficulty:"difficile", civil:"Judo", undercover:"Karaté" },
+  { theme:"Sport", difficulty:"difficile", civil:"Surf", undercover:"Planche à voile" },
+  { theme:"Sport", difficulty:"difficile", civil:"Kayak", undercover:"Canoë" },
+  { theme:"Sport", difficulty:"difficile", civil:"Paddock", undercover:"Stand" },
+  { theme:"Sport", difficulty:"difficile", civil:"Monoplace", undercover:"Karting" },
+  { theme:"Sport", difficulty:"difficile", civil:"Marathon", undercover:"Triathlon" },
+  { theme:"Sport", difficulty:"difficile", civil:"Haltérophilie", undercover:"Musculation" },
+  { theme:"Sport", difficulty:"difficile", civil:"Biathlon", undercover:"Décathlon" },
+
+  // --- OBJETS & MAISON (30) ---
+  { theme:"Objets", difficulty:"facile", civil:"Téléphone", undercover:"Ordinateur" },
+  { theme:"Objets", difficulty:"facile", civil:"Montre", undercover:"Horloge" },
+  { theme:"Objets", difficulty:"moyen", civil:"Stylo", undercover:"Crayon" },
+  { theme:"Objets", difficulty:"moyen", civil:"Valise", undercover:"Sac à dos" },
+  { theme:"Objets", difficulty:"moyen", civil:"Lunettes", undercover:"Lentilles" },
+  { theme:"Objets", difficulty:"difficile", civil:"Fourchette", undercover:"Cuillère" },
+  { theme:"Objets", difficulty:"difficile", civil:"Bougie", undercover:"Lampe" },
+  { theme:"Objets", difficulty:"difficile", civil:"Clé USB", undercover:"Disque dur" },
+  { theme:"Objets", difficulty:"difficile", civil:"Rideau", undercover:"Store" },
+  { theme:"Objets", difficulty:"difficile", civil:"Volet", undercover:"Persienne" },
+  { theme:"Objets", difficulty:"difficile", civil:"Couette", undercover:"Couverture" },
+  { theme:"Objets", difficulty:"difficile", civil:"Canapé", undercover:"Divan" },
+  { theme:"Objets", difficulty:"difficile", civil:"Tabouret", undercover:"Pouf" },
+  { theme:"Objets", difficulty:"difficile", civil:"Poêle", undercover:"Marmite" },
+  { theme:"Objets", difficulty:"difficile", civil:"Louche", undercover:"Spatule" },
+  { theme:"Objets", difficulty:"difficile", civil:"Balai", undercover:"Aspirateur" },
+  { theme:"Objets", difficulty:"difficile", civil:"Boussole", undercover:"GPS" },
+  { theme:"Objets", difficulty:"difficile", civil:"Thermomètre", undercover:"Baromètre" },
+  { theme:"Objets", difficulty:"difficile", civil:"Micro-ondes", undercover:"Four" },
+  { theme:"Objets", difficulty:"difficile", civil:"Oreiller", undercover:"Traversin" },
+
+  // --- LIEUX & GÉOGRAPHIE (18) ---
+  { theme:"Lieux", difficulty:"facile", civil:"Plage", undercover:"Montagne" },
+  { theme:"Lieux", difficulty:"facile", civil:"Hôtel", undercover:"Camping" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Stade", undercover:"Gymnase" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Musée", undercover:"Galerie d'art" },
+  { theme:"Lieux", difficulty:"moyen", civil:"Supermarché", undercover:"Marché" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Aéroport", undercover:"Gare" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Chalet", undercover:"Cabane" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Zoo", undercover:"Aquarium" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Désert", undercover:"Savane" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Métropole", undercover:"Capitale" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Continent", undercover:"Péninsule" },
+  { theme:"Lieux", difficulty:"difficile", civil:"Détroit", undercover:"Isthme" },
+
+  // --- TRANSPORT (16) ---
+  { theme:"Transport", difficulty:"facile", civil:"Voiture", undercover:"Vélo" },
+  { theme:"Transport", difficulty:"facile", civil:"Avion", undercover:"Train" },
+  { theme:"Transport", difficulty:"moyen", civil:"Trottinette", undercover:"Skateboard" },
+  { theme:"Transport", difficulty:"moyen", civil:"Moto", undercover:"Scooter" },
+  { theme:"Transport", difficulty:"difficile", civil:"Métro", undercover:"RER" },
+  { theme:"Transport", difficulty:"difficile", civil:"Voilier", undercover:"Catamaran" },
+  { theme:"Transport", difficulty:"difficile", civil:"Hélicoptère", undercover:"Drone" },
+  { theme:"Transport", difficulty:"difficile", civil:"Funiculaire", undercover:"Téléphérique" },
+  { theme:"Transport", difficulty:"difficile", civil:"Montgolfière", undercover:"Dirigeable" },
+  { theme:"Transport", difficulty:"difficile", civil:"Ferry", undercover:"Croisière" },
+  { theme:"Transport", difficulty:"difficile", civil:"Tramway", undercover:"Trolleybus" },
+
+  // --- DIVERTISSEMENT, JEUX & CULTURE (30) ---
+  { theme:"Divertissement", difficulty:"facile", civil:"Cinéma", undercover:"Théâtre" },
+  { theme:"Divertissement", difficulty:"facile", civil:"Concert", undercover:"Festival" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Jeu vidéo", undercover:"Jeu de société" },
+  { theme:"Divertissement", difficulty:"moyen", civil:"Roman", undercover:"Bande dessinée" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Podcast", undercover:"Radio" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Stand-up", undercover:"Improvisation" },
+  { theme:"Divertissement", difficulty:"difficile", civil:"Opéra", undercover:"Comédie musicale" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Joy-Con", undercover:"Manette" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Sanctuaire", undercover:"Donjon" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Naufragé", undercover:"Survivant" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Radeau", undercover:"Bateau" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Cartouche", undercover:"Disque" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Quête", undercover:"Mission" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Monopoly", undercover:"La Bonne Paye" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Échecs", undercover:"Dames" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Croupier", undercover:"Maître du jeu" },
+  { theme:"Jeux", difficulty:"difficile", civil:"Plateau", undercover:"Tuiles" },
+
+  // --- CONCEPTS & ABSTRAITS (Nouveau - 15) ---
+  { theme:"Concepts", difficulty:"moyen", civil:"Joie", undercover:"Bonheur" },
+  { theme:"Concepts", difficulty:"moyen", civil:"Rire", undercover:"Sourire" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Éthique", undercover:"Morale" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Empathie", undercover:"Sympathie" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Rêve", undercover:"Songe" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Mensonge", undercover:"Trahison" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Illusion", undercover:"Mirage" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Mythe", undercover:"Légende" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Peur", undercover:"Angoisse" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Tristesse", undercover:"Mélancolie" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Paradoxe", undercover:"Contradiction" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Hasard", undercover:"Destin" },
+  { theme:"Concepts", difficulty:"difficile", civil:"Talent", undercover:"Génie" },
+
+  // --- TECHNOLOGIE AVANCÉE (10) ---
+  { theme:"Technologie", difficulty:"difficile", civil:"Focale", undercover:"Ouverture" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Obturateur", undercover:"Diaphragme" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Retouche AI", undercover:"Montage" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Stabilisateur", undercover:"Trépied" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Capteur", undercover:"Lentille" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Fibre optique", undercover:"ADSL" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Serveur", undercover:"Cloud" },
+  { theme:"Technologie", difficulty:"difficile", civil:"Algorithme", undercover:"Code source" },
+
+  // --- VÊTEMENTS & MODE (12) ---
+  { theme:"Vêtements", difficulty:"facile", civil:"Pantalon", undercover:"Short" },
+  { theme:"Vêtements", difficulty:"moyen", civil:"Chaussures", undercover:"Baskets" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Bonnet", undercover:"Casquette" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Costume", undercover:"Smoking" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Veste", undercover:"Blouson" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Manteau", undercover:"Doudoune" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Baskets", undercover:"Sneakers" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Cravate", undercover:"Nœud papillon" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Ceinture", undercover:"Bretelles" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Chaussettes", undercover:"Mi-bas" },
+  { theme:"Vêtements", difficulty:"difficile", civil:"Écharpe", undercover:"Foulard" },
+
+  // --- ESPIONNAGE & ENQUÊTE (10) ---
+  { theme:"Espionnage", difficulty:"facile", civil:"Espion", undercover:"Détective" },
+  { theme:"Espionnage", difficulty:"moyen", civil:"Empreinte", undercover:"ADN" },
+  { theme:"Espionnage", difficulty:"moyen", civil:"Menottes", undercover:"Corde" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Alibi", undercover:"Témoignage" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Poison", undercover:"Somnifère" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Interrogatoire", undercover:"Audition" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Preuve", undercover:"Indice" },
+  { theme:"Espionnage", difficulty:"difficile", civil:"Suspect", undercover:"Coupable" }
 ];
 
 var ROLE_LABEL = { civil:"Civil", undercover:"Undercover", white:"Mr. White" };
@@ -180,65 +402,546 @@ var state = {
   themeMode:"dark"
 };
 
+function migrateLibrary(){
+  var currentVersion = "undercover_library_v4"; // Mise à jour pour charger la nouvelle liste de mots
+  var stored = null;
+  try{ var raw = localStorage.getItem(currentVersion); if(raw) stored = JSON.parse(raw); }catch(e){}
+  if(stored && stored.length){ state.library = stored; return; }
+
+  var customPairs = [];
+  try{
+    var oldKeys = ["undercover_library", "undercover_library_v2", "undercover_library_v3", "undercover_custom_pairs"];
+    oldKeys.forEach(function(key){
+      var oldRaw = localStorage.getItem(key);
+      if(oldRaw){
+        var parsed = JSON.parse(oldRaw);
+        parsed.forEach(function(p){
+          if(p.id && String(p.id).indexOf("c") === 0){
+            var exists = customPairs.some(function(cp){ return cp.civil === p.civil && cp.undercover === p.undercover; });
+            if(!exists) customPairs.push(p);
+          }
+        });
+      }
+    });
+  }catch(e){}
+
+  var lib = BUILTIN_PAIRS.map(function(p,i){ return { id:"b"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }; });
+  customPairs.forEach(function(p){ lib.push(p); });
+  state.library = lib;
+  saveLibrary();
+}
+
+function saveLibrary(){ try{ localStorage.setItem("undercover_library_v4", JSON.stringify(state.library)); }catch(e){} }
+
 function loadStorage(){
-  state.library = BUILTIN_PAIRS.map(function(p,i){ return { id:"b"+i, theme:p.theme, difficulty:p.difficulty, civil:p.civil, undercover:p.undercover }; });
+  migrateLibrary();
+  try{ var gh = localStorage.getItem("undercover_game_history"); if(gh) state.gameHistory = JSON.parse(gh); }catch(e){}
+  try{ var tm = localStorage.getItem("undercover_theme"); if(tm==="light"||tm==="dark") state.themeMode = tm; }catch(e){}
   applyTheme();
 }
-function applyTheme(){ document.documentElement.setAttribute("data-theme", state.themeMode); }
-function toggleTheme(){ state.themeMode = state.themeMode==="dark" ? "light" : "dark"; applyTheme(); render(); }
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", state.themeMode);
+}
+function toggleTheme(){
+  state.themeMode = state.themeMode==="dark" ? "light" : "dark";
+  try{ localStorage.setItem("undercover_theme", state.themeMode); }catch(e){}
+  applyTheme();
+  render();
+}
 function toggleFullscreen(){
   var isFs = document.fullscreenElement || document.webkitFullscreenElement;
-  if(!isFs){ var el = document.documentElement; if(el.requestFullscreen) el.requestFullscreen(); }
-  else { if(document.exitFullscreen) document.exitFullscreen(); }
+  if(!isFs){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if(req){ try{ req.call(el); }catch(e){} }
+  } else {
+    var exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if(exit){ try{ exit.call(document); }catch(e){} }
+  }
+}
+document.addEventListener("fullscreenchange", function(){ render(); });
+document.addEventListener("webkitfullscreenchange", function(){ render(); });
+function saveGameHistory(){ try{ localStorage.setItem("undercover_game_history", JSON.stringify(state.gameHistory.slice(0,30))); }catch(e){} }
+
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function allPairs(){ return state.library; }
+function themesList(){
+  var set = {}; allPairs().forEach(function(p){ set[p.theme]=true; });
+  return ["Aléatoire"].concat(Object.keys(set).sort());
 }
 
 function addPlayer(){
   var input = document.getElementById("nameInput");
-  if(input && input.value.trim()){ state.playerNames.push(input.value.trim()); render(); }
+  var name = input.value.trim();
+  if(!name) return;
+  state.playerNames.push(name);
+  render();
 }
 function removePlayer(idx){ state.playerNames.splice(idx,1); render(); }
-function changeUndercover(delta){ state.numUndercover = Math.max(0, Math.min(3, state.numUndercover+delta)); render(); }
-function changeWhite(delta){ state.numWhite = Math.max(0, Math.min(2, state.numWhite+delta)); render(); }
+
+function changeUndercover(delta){
+  state.numUndercover = Math.max(0, Math.min(3, state.numUndercover+delta)); render();
+}
+function changeWhite(delta){
+  state.numWhite = Math.max(0, Math.min(2, state.numWhite+delta)); render();
+}
+function setTheme(v){ state.theme=v; }
+function setDifficulty(v){ state.difficulty=v; }
+
+function toggleGameMaster(){
+  state.isGameMaster = !state.isGameMaster;
+  render();
+}
+function toggleBlindMode(){
+  state.blindMode = !state.blindMode;
+  render();
+}
 
 function startGame(){
-  var pair = BUILTIN_PAIRS[Math.floor(Math.random()*BUILTIN_PAIRS.length)];
+  var pair = null;
+
+  if(state.isGameMaster){
+    var gmCiv = document.getElementById("gmCivil");
+    var gmUnd = document.getElementById("gmUndercover");
+    if(gmCiv) state.customCivil = gmCiv.value.trim();
+    if(gmUnd) state.customUndercover = gmUnd.value.trim();
+
+    if(!state.customCivil || !state.customUndercover){
+      alert("Veuillez renseigner les deux mots pour le mode Meneur d'enquête.");
+      return;
+    }
+    pair = { theme:"Personnalisé", difficulty:"Custom", civil:state.customCivil, undercover:state.customUndercover };
+  } else {
+    var themeSel = document.getElementById("themeSel");
+    var diffSel = document.getElementById("diffSel");
+    if(themeSel) state.theme = themeSel.value;
+    if(diffSel) state.difficulty = diffSel.value;
+
+    var pool = allPairs();
+    if(state.theme !== "Aléatoire") pool = pool.filter(function(p){return p.theme===state.theme;});
+    if(state.difficulty !== "Aléatoire") pool = pool.filter(function(p){return p.difficulty===state.difficulty;});
+    if(pool.length===0) pool = allPairs();
+    pair = pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  var order = shuffle(state.playerNames.map(function(_,i){return i;}));
   var players = state.playerNames.map(function(name,idx){
     return { id:idx, name:name, role:"civil", word:pair.civil, alive:true };
   });
+  order.slice(0,state.numUndercover).forEach(function(idx){ players[idx].role="undercover"; players[idx].word=pair.undercover; });
+  order.slice(state.numUndercover, state.numUndercover+state.numWhite).forEach(function(idx){ players[idx].role="white"; players[idx].word=null; });
+
   state.players = players;
   state.wordPair = pair;
   state.revealIndex = 0;
   state.revealed = false;
   state.round = 1;
+  state.eliminations = [];
+  state.winner = null;
+  state.clueOrder = shuffle(players.map(function(p){return p.id;}));
+  state.clueTurn = 0;
   state.screen = "reveal";
   render();
 }
 
-function render(){
-  var html = '';
-  html += '<header><div><h1 class="display">Dossier &middot; Undercover</h1><div class="subtitle">Connecté à Firebase Firestore</div></div>';
-  html += '<div class="headerbtns"><button class="themebtn" onclick="toggleTheme()">Thème</button></div></header>';
+function revealCard(){ state.revealed = true; render(); }
+function nextReveal(){
+  if(state.revealIndex+1 >= state.players.length){ state.screen="clues"; }
+  else { state.revealIndex++; state.revealed=false; }
+  render();
+}
 
-  if(state.screen==="setup"){
-    var chips = state.playerNames.map(function(name,idx){ return '<div class="chip"><span>'+name+'</span><button onclick="removePlayer('+idx+')">✕</button></div>'; }).join("");
-    html += '<div class="panel"><h2>Suspects</h2><div class="chips">'+chips+'</div>';
-    html += '<div class="inline2"><input type="text" id="nameInput" placeholder="Nom"><button class="btn btn-ghost btn-small" onclick="addPlayer()">+</button></div></div>';
-    html += '<button class="btn btn-primary" onclick="startGame()">Lancer l\'enquête</button>';
-  } else if(state.screen==="reveal"){
-    var p = state.players[state.revealIndex];
-    html += '<div class="panel center py-lg"><h2>Tour de '+p.name+'</h2>';
-    if(!state.revealed){
-      html += '<button class="btn btn-primary" onclick="state.revealed=true; render();">Voir mon mot</button>';
-    } else {
-      html += '<p class="wordbig">'+p.word+'</p>';
-      html += '<button class="btn btn-ghost mt16" onclick="if(state.revealIndex+1 < state.players.length){state.revealIndex++; state.revealed=false;}else{state.screen=\'end\';} render();">Suivant</button>';
-    }
-    html += '</div>';
+function aliveClueOrder(){
+  return state.clueOrder.filter(function(id){
+    var p = state.players.find(function(pl){return pl.id===id;});
+    return p && p.alive;
+  });
+}
+function nextClueTurn(){
+  var order = aliveClueOrder();
+  if(state.clueTurn+1 >= order.length){ state.screen="vote"; state.selectedVote=null; }
+  else { state.clueTurn++; }
+  render();
+}
+function goToVote(){ state.screen="vote"; state.selectedVote=null; render(); }
+function selectVote(id){ state.selectedVote = id; render(); }
+
+function confirmVote(){
+  if(state.selectedVote==null) return;
+  var target = state.players.find(function(p){return p.id===state.selectedVote;});
+  state.justEliminated = target;
+  target.alive = false;
+  state.eliminations.push({ round:state.round, playerId:target.id, name:target.name, role:target.role });
+  if(target.role==="white"){
+    state.screen="whiteGuess";
   } else {
-    html += '<div class="panel center"><h2>Partie en cours</h2><button class="btn btn-primary" onclick="state.screen=\'setup\'; render();">Recommencer</button></div>';
+    state.screen="eliminationReveal";
   }
+  render();
+}
+
+function submitWhiteGuess(){
+  var input = document.getElementById("whiteGuessInput");
+  var guess = (input ? input.value : "").trim();
+  var correct = guess.length>0 && guess.toLowerCase()===state.wordPair.civil.trim().toLowerCase();
+  var last = state.eliminations[state.eliminations.length-1];
+  last.whiteGuess = guess;
+  last.whiteCorrect = correct;
+  if(correct){ finishGame("white"); }
+  else { state.screen="eliminationReveal"; render(); }
+}
+
+function checkWinCondition(){
+  var alive = state.players.filter(function(p){return p.alive;});
+  var aliveInf = alive.filter(function(p){return p.role!=="civil";}).length;
+  var aliveCiv = alive.filter(function(p){return p.role==="civil";}).length;
+  if(aliveInf===0) return "civils";
+  if(aliveInf>=aliveCiv) return "infiltrators";
+  return null;
+}
+function proceedAfterElimination(){
+  var result = checkWinCondition();
+  if(result){ finishGame(result); return; }
+  state.round++;
+  var aliveIds = state.players.filter(function(p){return p.alive;}).map(function(p){return p.id;});
+  state.clueOrder = shuffle(aliveIds);
+  state.clueTurn = 0;
+  state.screen = "clues";
+  render();
+}
+
+function finishGame(winnerKey){
+  state.winner = winnerKey;
+  state.screen = "end";
+  state.gameHistory.unshift({
+    date:new Date().toISOString(),
+    winner:winnerKey,
+    players: state.players.map(function(p){return {name:p.name, role:p.role};}),
+    rounds: state.round,
+    wordPair: state.wordPair,
+    eliminations: state.eliminations
+  });
+  saveGameHistory();
+  render();
+}
+
+function newGameSamePlayers(){ state.screen="setup"; render(); }
+
+// --- FONCTION AVEC MOT DE PASSE ---
+function openLibrary() {
+  var pwd = prompt("🔒 ACCÈS RESTREINT\nVeuillez saisir le code d'accès à 4 chiffres :");
+  if(pwd === "2800") {
+    state.showLibrary = true;
+    render();
+  } else if (pwd !== null && pwd !== "") {
+    alert("❌ Code d'accès incorrect. L'incident a été signalé.");
+  }
+}
+
+function closeLibrary(){ state.showLibrary=false; render(); }
+function openStats(){ state.showStats=true; render(); }
+function closeStats(){ state.showStats=false; render(); }
+
+function addLibraryPair(){
+  var civil = document.getElementById("wmCivil").value.trim();
+  var undercover = document.getElementById("wmUndercover").value.trim();
+  var theme = document.getElementById("wmTheme").value.trim();
+  var diff = document.getElementById("wmDiff").value;
+  if(!civil || !undercover || !theme) return;
+  state.library.push({ id:"c"+Date.now()+"_"+Math.floor(Math.random()*1000), theme:theme, difficulty:diff, civil:civil, undercover:undercover });
+  saveLibrary();
+  render();
+}
+function deleteLibraryPair(id){
+  state.library = state.library.filter(function(p){ return p.id!==id; });
+  saveLibrary();
+  render();
+}
+function moveLibraryPair(id, newTheme){
+  var p = state.library.find(function(pl){ return pl.id===id; });
+  if(p){ p.theme = newTheme; saveLibrary(); }
+  render();
+}
+
+// ============ RENDER ============
+
+function render(){
+  var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  var html = "";
+  html += '<header><div><h1 class="display">Dossier &middot; Undercover</h1><div class="subtitle">Enquête confidentielle &mdash; jeu de déduction</div><span class="casetag">Affaire N&deg; 0047 &mdash; Classé secret</span></div>';
+  html += '<div class="headerbtns">';
+  if(state.screen==="setup" && !state.showLibrary && !state.showStats){
+    html += '<button class="iconbtn" onclick="openLibrary()" aria-label="Archives des indices">&#128193;</button>';
+    html += '<button class="iconbtn" onclick="openStats()" aria-label="Registre des affaires">&#128220;</button>';
+  }
+  html += '<button class="themebtn" onclick="toggleTheme()">'+(state.themeMode==="dark" ? "&#9728; Jour" : "&#9789; Nuit")+'</button>';
+  html += '<button class="themebtn" onclick="toggleFullscreen()">'+(isFs ? "&#10005; Quitter" : "&#9974; Plein écran")+'</button>';
+  html += '</div></header>';
+
+  if(state.showLibrary){ html += renderLibrary(); }
+  else if(state.showStats){ html += renderStats(); }
+  else if(state.screen==="setup"){ html += renderSetup(); }
+  else if(state.screen==="reveal"){ html += renderReveal(); }
+  else if(state.screen==="clues"){ html += renderClues(); }
+  else if(state.screen==="vote"){ html += renderVote(); }
+  else if(state.screen==="whiteGuess"){ html += renderWhiteGuess(); }
+  else if(state.screen==="eliminationReveal"){ html += renderEliminationReveal(); }
+  else if(state.screen==="end"){ html += renderEnd(); }
 
   document.getElementById("app").innerHTML = html;
+  var ni = document.getElementById("nameInput");
+  if(ni){ ni.addEventListener("keydown", function(e){ if(e.key==="Enter") addPlayer(); }); ni.focus({preventScroll:true}); }
+  var wg = document.getElementById("whiteGuessInput");
+  if(wg){ wg.addEventListener("keydown", function(e){ if(e.key==="Enter") submitWhiteGuess(); }); wg.focus({preventScroll:true}); }
+}
+
+function renderSetup(){
+  var n = state.playerNames.length;
+  var numCivils = n - state.numUndercover - state.numWhite;
+  var tooMany = (state.numUndercover+state.numWhite) >= numCivils || numCivils<1;
+  var canStart = n>=3 && !tooMany;
+
+  var chips = state.playerNames.map(function(name,idx){
+    return '<div class="chip"><span>'+esc(name)+'</span><button onclick="removePlayer('+idx+')">&#10005;</button></div>';
+  }).join("");
+
+  var themes = themesList();
+  var themeOpts = themes.map(function(t){ return '<option value="'+esc(t)+'"'+(t===state.theme?" selected":"")+'>'+esc(t)+'</option>'; }).join("");
+  var diffs = ["Aléatoire","facile","moyen","difficile"];
+  var diffOpts = diffs.map(function(d){ return '<option value="'+d+'"'+(d===state.difficulty?" selected":"")+'>'+d+'</option>'; }).join("");
+
+  var html = "";
+  html += '<div class="panel"><h2>Suspects ('+n+')</h2><div class="chips">'+chips+'</div>';
+  html += '<div class="inline2"><input type="text" id="nameInput" placeholder="Nom du suspect"><button class="btn btn-ghost btn-small" onclick="addPlayer()">+</button></div></div>';
+
+  html += '<div class="panel"><h2>Infiltrés</h2>';
+  html += '<div class="row"><span class="label">Undercover</span><div class="stepper"><button onclick="changeUndercover(-1)">&minus;</button><span class="val mono">'+state.numUndercover+'</span><button onclick="changeUndercover(1)">+</button></div></div>';
+  html += '<div class="row"><span class="label">Mr. White</span><div class="stepper"><button onclick="changeWhite(-1)">&minus;</button><span class="val mono">'+state.numWhite+'</span><button onclick="changeWhite(1)">+</button></div></div>';
+  html += '<div class="mono dim" style="font-size:12px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;">'+numCivils+' civil'+(numCivils>1?"s":"")+' &middot; '+state.numUndercover+' undercover &middot; '+state.numWhite+' mr. white</div>';
+  if(tooMany) html += '<div class="warn">Trop d\'infiltrés pour '+n+' suspects — les civils doivent rester majoritaires.</div>';
+  html += '</div>';
+
+  html += '<div class="panel">';
+  html += '<div class="toprow mb10"><h2>Mots codés & Règles</h2></div>';
+  
+  html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;" class="dim mono">';
+  html += '<input type="checkbox" '+(state.isGameMaster?"checked":"")+' onchange="toggleGameMaster()"> Mode Meneur d\'enquête';
+  html += '</label>';
+
+  html += '<label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:10px;margin-bottom:10px;" class="dim mono">';
+  html += '<input type="checkbox" '+(state.blindMode?"checked":"")+' onchange="toggleBlindMode()"> Mode Identité Secrète (Rôles cachés)';
+  html += '</label>';
+
+  if(state.isGameMaster){
+    html += '<p class="dim" style="font-size:12px;margin:0 0 10px;border-top:1px solid var(--border);padding-top:10px;">Définissez manuellement les mots pour cette affaire :</p>';
+    html += '<div class="grid2">';
+    html += '<div><span class="fieldlabel">Mot des Civils</span><input type="text" id="gmCivil" value="'+esc(state.customCivil)+'" placeholder="ex: Soleil" oninput="state.customCivil=this.value"></div>';
+    html += '<div><span class="fieldlabel">Mot des Undercovers</span><input type="text" id="gmUndercover" value="'+esc(state.customUndercover)+'" placeholder="ex: Lune" oninput="state.customUndercover=this.value"></div>';
+    html += '</div>';
+  } else {
+    html += '<div class="grid2" style="border-top:1px solid var(--border);padding-top:10px;">';
+    html += '<div><span class="fieldlabel">Dossier</span><select id="themeSel" onchange="setTheme(this.value)">'+themeOpts+'</select></div>';
+    html += '<div><span class="fieldlabel">Niveau</span><select id="diffSel" onchange="setDifficulty(this.value)">'+diffOpts+'</select></div>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '<button class="btn btn-primary" '+(canStart?"":"disabled")+' onclick="startGame()">Ouvrir l\'enquête &#8594;</button>';
+  if(n<3) html += '<p class="dim center" style="font-size:12px;">Réunissez au moins 3 suspects.</p>';
+  return html;
+}
+
+function renderReveal(){
+  var p = state.players[state.revealIndex];
+  var html = '<p class="center mono dim" style="font-size:12px;">DÉPOSITION '+(state.revealIndex+1)+' / '+state.players.length+'</p>';
+  html += '<div class="panel center py-lg">';
+  
+  if(!state.revealed){
+    html += '<p class="dim" style="font-size:14px;">Remettez le dossier à</p>';
+    html += '<p class="display" style="font-size:24px;margin:6px 0 20px;">'+esc(p.name)+'</p>';
+    html += '<div class="redacted"><div></div><div></div><div></div><div></div></div>';
+    html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="revealCard()">&#128065; Ouvrir mon dossier</button>';
+  } else {
+    
+    if(state.blindMode) {
+        html += '<div class="stamp neutral">IDENTITÉ SECRÈTE</div>';
+        if(p.role==="white"){
+          html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
+        } else {
+          html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
+        }
+    } else {
+        var cls = p.role==="civil" ? "stamp olive" : "stamp";
+        html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+        if(p.role==="white"){
+          html += '<p class="dim mt16" style="font-size:14px;max-width:280px;margin-left:auto;margin-right:auto;">Aucun mot dans votre dossier. Écoutez les dépositions et bluffez pour ne pas être démasqué.</p>';
+        } else {
+          html += '<p class="dim mt16" style="font-size:12px;">Votre mot codé</p><p class="wordbig">'+esc(p.word)+'</p>';
+        }
+    }
+
+    html += '<button class="btn btn-ghost mt24" style="width:auto;padding:11px 20px;" onclick="nextReveal()">Vu — refermer le dossier</button>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderClues(){
+  var order = aliveClueOrder();
+  var currentId = order[state.clueTurn];
+  var current = state.players.find(function(p){return p.id===currentId;});
+  var html = '<div class="toprow"><div class="stamp sm">Manche '+state.round+'</div><span class="mono dim" style="font-size:12px;">'+(state.clueTurn+1)+' / '+order.length+'</span></div>';
+  html += '<div class="panel center py-lg" style="margin-top:16px;">';
+  html += '<p class="dim" style="font-size:14px;">Déposition de</p>';
+  html += '<p class="display" style="font-size:24px;margin:4px 0;">'+esc(current.name)+'</p>';
+  html += '<p class="dim" style="font-size:12px;margin-bottom:20px;">livrez votre indice à voix haute</p>';
+  html += '<button class="btn btn-primary" style="width:auto;padding:13px 22px;" onclick="nextClueTurn()">Indice consigné &#8250;</button>';
+  html += '</div>';
+  html += '<div class="flexwrap">';
+  order.forEach(function(id,i){
+    var p = state.players.find(function(pl){return pl.id===id;});
+    var cls = i<state.clueTurn ? "clueChip done" : (i===state.clueTurn ? "clueChip current" : "clueChip");
+    html += '<span class="'+cls+'">'+esc(p.name)+'</span>';
+  });
+  html += '</div>';
+  html += '<button class="linkbtn mt16" onclick="goToVote()">Passer directement à l\'interrogatoire</button>';
+  return html;
+}
+
+function renderVote(){
+  var alive = state.players.filter(function(p){return p.alive;});
+  var html = '<div class="stamp sm">Manche '+state.round+' — Interrogatoire</div>';
+  html += '<p class="dim mt10" style="font-size:14px;">Les suspects ont débattu et voté à l\'oral. Désignez le suspect mis en accusation.</p>';
+  html += '<div class="mt16">';
+  alive.forEach(function(p){
+    var sel = state.selectedVote===p.id;
+    html += '<button class="voteitem'+(sel?" selected":"")+'" onclick="selectVote('+p.id+')"><span>'+esc(p.name)+'</span>'+(sel?'<span>&#10003;</span>':'')+'</button>';
+  });
+  html += '</div>';
+  html += '<button class="btn btn-primary" '+(state.selectedVote==null?"disabled":"")+' onclick="confirmVote()">&#128128; Confirmer l\'inculpation</button>';
+  return html;
+}
+
+function renderWhiteGuess(){
+  var p = state.justEliminated;
+  var html = '<div class="panel center py-lg">';
+  html += '<div class="stamp md">Mr. White démasqué</div>';
+  html += '<p class="mt16" style="font-size:15px;">'+esc(p.name)+', dernière chance :</p>';
+  html += '<p class="dim mb10" style="font-size:13px;">devinez le mot des civils pour renverser l\'enquête</p>';
+  html += '<input type="text" id="whiteGuessInput" placeholder="Votre déposition" style="text-align:center;">';
+  html += '<button class="btn btn-primary mt16" onclick="submitWhiteGuess()">Valider la déposition</button>';
+  html += '</div>';
+  return html;
+}
+
+function renderEliminationReveal(){
+  var p = state.justEliminated;
+  var last = state.eliminations[state.eliminations.length-1];
+  var aliveCiv = state.players.filter(function(pl){return pl.alive && pl.role==="civil";}).length;
+  var aliveInf = state.players.filter(function(pl){return pl.alive && pl.role!=="civil";}).length;
+  var cls = p.role==="civil" ? "stamp olive" : "stamp";
+  var html = '<div class="panel center py-lg">';
+  html += '<p class="dim" style="font-size:14px;">'+esc(p.name)+' était</p>';
+  
+  html += '<div class="'+cls+'">'+ROLE_LABEL[p.role]+'</div>';
+  
+  if(last && last.whiteGuess){
+    html += '<p class="dim mt16" style="font-size:13px;">A déposé « '+esc(last.whiteGuess)+' » — '+(last.whiteCorrect?"correct":"incorrect")+'</p>';
+  }
+  html += '<p class="mono faint mt16" style="font-size:11px;">Encore en liberté : '+aliveCiv+' civil'+(aliveCiv>1?"s":"")+', '+aliveInf+' infiltré'+(aliveInf>1?"s":"")+'</p>';
+  html += '<button class="btn btn-ghost mt16" style="width:auto;padding:11px 20px;" onclick="proceedAfterElimination()">Poursuivre l\'enquête</button>';
+  html += '</div>';
+  return html;
+}
+
+function renderEnd(){
+  var label = state.winner==="civils" ? "Les Civils gagnent" : (state.winner==="white" ? "Mr. White gagne" : "Les Infiltrés gagnent");
+  var cls = state.winner==="civils" ? "stamp olive" : "stamp";
+  var html = '<div class="panel center py-lg">';
+  html += '<div class="'+cls+'">'+label+'</div>';
+  html += '<p class="mono dim mt16" style="font-size:12px;">Affaire classée en '+state.round+' manche'+(state.round>1?"s":"")+'</p>';
+  html += '</div>';
+
+  html += '<div class="panel"><h2>Pièces à conviction</h2><div class="split">';
+  html += '<div><p class="dim" style="font-size:12px;">Civils</p><p class="num">'+esc(state.wordPair.civil)+'</p></div>';
+  html += '<div><p class="dim" style="font-size:12px;">Undercover</p><p class="num">'+esc(state.wordPair.undercover)+'</p></div>';
+  html += '</div></div>';
+
+  html += '<div class="panel"><h2>Rapport final</h2>';
+  state.players.forEach(function(p){
+    html += '<div class="listrow"><span class="'+(p.alive?"":"strike")+'">'+esc(p.name)+'</span><span class="mono dim" style="font-size:12px;">'+ROLE_LABEL[p.role]+'</span></div>';
+  });
+  if(state.eliminations.length>0){
+    html += '<div style="border-top:1px solid var(--border);margin-top:10px;padding-top:8px;">';
+    state.eliminations.forEach(function(e){
+      html += '<p class="dim" style="font-size:12px;margin:4px 0;">Manche '+e.round+' — '+esc(e.name)+' inculpé ('+ROLE_LABEL[e.role]+')</p>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '<button class="btn btn-primary" onclick="newGameSamePlayers()">&#8635; Nouvelle affaire</button>';
+  return html;
+}
+
+function renderLibrary(){
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeLibrary()">&#8249; Retour au dossier</button>';
+  html += '<div class="panel"><h2>Nouvel indice</h2>';
+  html += '<div class="grid2"><input type="text" id="wmCivil" placeholder="Mot civil"><input type="text" id="wmUndercover" placeholder="Mot undercover"></div>';
+  html += '<div class="grid2"><input type="text" id="wmTheme" placeholder="Dossier (existant ou nouveau)"><select id="wmDiff"><option value="facile">facile</option><option value="moyen" selected>moyen</option><option value="difficile">difficile</option></select></div>';
+  html += '<button class="btn btn-ghost" onclick="addLibraryPair()">+ Classer dans les archives</button></div>';
+
+  var groups = {};
+  state.library.forEach(function(p){ (groups[p.theme]=groups[p.theme]||[]).push(p); });
+  var themeNames = Object.keys(groups).sort();
+
+  html += '<div class="panel"><h2>Archives ('+state.library.length+' indices)</h2>';
+  themeNames.forEach(function(t){
+    html += '<p class="mono dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin:14px 0 6px;">'+esc(t)+' ('+groups[t].length+')</p>';
+    groups[t].forEach(function(p){
+      var opts = themeNames.map(function(tn){ return '<option value="'+esc(tn)+'"'+(tn===p.theme?" selected":"")+'>'+esc(tn)+'</option>'; }).join("");
+      html += '<div class="libraryrow">';
+      html += '<div class="libwords"><span>'+esc(p.civil)+'</span><span class="dim"> / </span><span>'+esc(p.undercover)+'</span><span class="mono faint" style="font-size:10px;display:block;">'+p.difficulty+'</span></div>';
+      html += '<div class="libcontrols"><select class="libSelect" onchange="moveLibraryPair(\''+p.id+'\', this.value)">'+opts+'</select><button onclick="deleteLibraryPair(\''+p.id+'\')" aria-label="Supprimer">&#128465;</button></div>';
+      html += '</div>';
+    });
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderStats(){
+  var total = state.gameHistory.length;
+  var civilWins = state.gameHistory.filter(function(g){return g.winner==="civils";}).length;
+  var infWins = total - civilWins;
+  var html = '<button class="linkbtn" style="text-align:left;margin:0 0 14px;" onclick="closeStats()">&#8249; Retour au dossier</button>';
+  html += '<div class="panel"><h2>Bilan des affaires</h2><div class="split">';
+  html += '<div><p class="num">'+total+'</p><p class="dim" style="font-size:12px;">affaires</p></div>';
+  html += '<div><p class="num">'+civilWins+'</p><p class="dim" style="font-size:12px;">civils</p></div>';
+  html += '<div><p class="num">'+infWins+'</p><p class="dim" style="font-size:12px;">infiltrés</p></div>';
+  html += '</div></div>';
+
+  html += '<div class="panel"><h2>Registre des affaires</h2>';
+  if(total===0){
+    html += '<p class="dim" style="font-size:12px;">Aucune affaire archivée pour le moment.</p>';
+  } else {
+    state.gameHistory.forEach(function(g){
+      var w = g.winner==="civils" ? "Civils" : (g.winner==="white" ? "Mr. White" : "Infiltrés");
+      html += '<div class="histrow"><div class="toprow"><span>'+w+'</span><span class="mono faint" style="font-size:11px;">'+new Date(g.date).toLocaleDateString("fr-FR")+'</span></div>';
+      html += '<p class="dim" style="font-size:12px;">'+g.players.length+' suspects &middot; '+g.rounds+' manche'+(g.rounds>1?"s":"")+' &middot; indice : '+esc(g.wordPair.civil)+'</p></div>';
+    });
+  }
+  html += '</div>';
+  return html;
 }
 
 loadStorage();
