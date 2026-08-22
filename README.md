@@ -1,2 +1,2 @@
-# .jeux.io
+# jeux.io
 mes jeux
