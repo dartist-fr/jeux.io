@@ -77,10 +77,16 @@
         .panel { background: rgba(0,0,0,0.35); border: 2px solid var(--border-color); padding: 18px; margin-bottom: 16px; text-align: center; }
         .panel h2 { font-family: var(--font-display); font-size: 0.65rem; color: var(--text-sub); margin-bottom: 12px; }
 
+        /* --- Amélioration de la visibilité des spectres --- */
         .spectrum-container {
             display: flex; justify-content: space-between; align-items: center;
-            font-family: var(--font-display); font-size: 0.75rem; color: var(--neon-yellow);
-            margin-bottom: 15px; padding: 0 5px;
+            font-family: var(--font-display); font-size: 0.85rem; color: #fff;
+            background: rgba(34, 230, 255, 0.08); border: 2px solid var(--accent);
+            padding: 12px 16px; margin-bottom: 18px; border-radius: 4px;
+            text-shadow: 0 0 8px rgba(34, 230, 255, 0.6);
+        }
+        .spectrum-container span {
+            color: var(--neon-yellow);
         }
 
         .gauge-box {
@@ -161,15 +167,14 @@
             screen: "setup",
             scoreTotal: 0,
             paireActuelle: null,
-            targetPosition: 50, // Position secrète (0 à 100)
+            targetPosition: 50,
             indice: "",
-            guessPosition: 50,  // Position devinée par l'équipe
+            guessPosition: 50,
             pointsGagnes: 0
         };
 
         function lancerManche() {
             state.paireActuelle = PAIRES_SPECTRUM[Math.floor(Math.random() * PAIRES_SPECTRUM.length)];
-            // Position aléatoire exacte entre 0% et 100%
             state.targetPosition = Math.floor(Math.random() * 101);
             state.guessPosition = 50;
             state.indice = "";
@@ -187,9 +192,9 @@
                     <div class="panel">
                         <h2>Règles du jeu</h2>
                         <div class="rule-box">
-                            1. Un <strong>Médium</strong> est désigné et découvre une position secrète sur une jauge allant de gauche à droite.<br><br>
+                            1. Un <strong>Médium</strong> découvre une position secrète sur une jauge allant de gauche à droite.<br><br>
                             2. Le Médium donne un <strong>indice textuel</strong> unique pour guider son équipe.<br><br>
-                            3. L'équipe discute, débat et place le curseur pour viser le plus près possible de la cible secrète !
+                            3. L'équipe discute et place le curseur pour viser le plus près possible de la cible !
                         </div>
                         <button class="btn btn-primary" onclick="lancerManche()">Commencer la partie ›</button>
                     </div>
@@ -202,14 +207,14 @@
                     <div class="panel">
                         <h2>Spectre de cette manche</h2>
                         <div class="spectrum-container">
-                            <span>⬅️ ${state.paireActuelle.left}</span>
-                            <span>${state.paireActuelle.right} ➡️</span>
+                            <span>◀ ${state.paireActuelle.left}</span>
+                            <span>${state.paireActuelle.right} ▶</span>
                         </div>
                         <div style="background:#07040f; border:2px solid var(--accent); padding:15px; margin:15px 0;">
                             <p style="font-size:0.9rem; color:var(--text-sub);">Position exacte de la cible secrète :</p>
                             <h2 style="font-size:1.8rem; color:var(--neon-pink); margin-top:5px;">${state.targetPosition}%</h2>
                         </div>
-                        <p style="font-size:1.05rem; color:var(--text-sub);">Passez discrètement le téléphone au Médium pour qu'il mémorise cette position, puis cliquez ci-dessous.</p>
+                        <p style="font-size:1.05rem; color:var(--text-sub);">Passez discrètement le téléphone au Médium, puis cliquez ci-dessous.</p>
                     </div>
                     <button class="btn btn-primary" onclick="state.screen='medium_indice'; render();">Le Médium a mémorisé ›</button>
                 `;
@@ -221,10 +226,10 @@
                     <div class="panel">
                         <h2>Rappel du spectre</h2>
                         <div class="spectrum-container">
-                            <span>⬅️ ${state.paireActuelle.left}</span>
-                            <span>${state.paireActuelle.right} ➡️</span>
+                            <span>◀ ${state.paireActuelle.left}</span>
+                            <span>${state.paireActuelle.right} ▶</span>
                         </div>
-                        <p style="color:var(--neon-yellow); font-size:1rem; margin:10px 0;">Cible secrète : <strong>${state.targetPosition}%</strong> (0 = Tout à gauche, 100 = Tout à droite)</p>
+                        <p style="color:var(--neon-yellow); font-size:1rem; margin:10px 0;">Cible secrète : <strong>${state.targetPosition}%</strong></p>
                         <p style="font-size:1.05rem; margin-top:15px;">Écrivez un indice textuel pour orienter votre équipe :</p>
                         <input type="text" id="inputIndice" placeholder="Ex: Le café, Un rocher..." value="${state.indice}" oninput="state.indice = this.value">
                     </div>
@@ -240,8 +245,8 @@
                         <p style="font-size:1.5rem; color:var(--accent); margin:10px 0;">« ${state.indice} »</p>
                         
                         <div class="spectrum-container" style="margin-top:20px;">
-                            <span>⬅️ ${state.paireActuelle.left}</span>
-                            <span>${state.paireActuelle.right} ➡️</span>
+                            <span>◀ ${state.paireActuelle.left}</span>
+                            <span>${state.paireActuelle.right} ▶</span>
                         </div>
 
                         <div class="gauge-box">
@@ -249,7 +254,7 @@
                             <div class="cursor-line" id="cursorLine" style="left: ${state.guessPosition}%;"></div>
                             <input type="range" min="0" max="100" value="${state.guessPosition}" oninput="state.guessPosition = this.value; document.getElementById('cursorLine').style.left = this.value + '%';">
                         </div>
-                        <p style="font-size:0.95rem; color:var(--text-sub);">Glissez le curseur selon votre interprétation de l'indice.</p>
+                        <p style="font-size:0.95rem; color:var(--text-sub);">Glissez le curseur selon votre interprétation.</p>
                     </div>
                     <button class="btn btn-primary" onclick="calculerScore()">Valider notre choix 🎯</button>
                 `;
@@ -260,15 +265,13 @@
                     <p class="phase-subtitle">Révélation de la fréquence</p>
                     <div class="panel">
                         <div class="spectrum-container">
-                            <span>⬅️ ${state.paireActuelle.left}</span>
-                            <span>${state.paireActuelle.right} ➡️</span>
+                            <span>◀ ${state.paireActuelle.left}</span>
+                            <span>${state.paireActuelle.right} ▶</span>
                         </div>
 
                         <div class="gauge-box">
                             <div class="gauge-track"></div>
-                            <!-- Zone cible visible -->
                             <div class="target-zone" style="left: ${Math.max(0, state.targetPosition - 10)}%; width: 20%;"></div>
-                            <!-- Ligne du choix -->
                             <div class="cursor-line" style="left: ${state.guessPosition}%; background:var(--neon-yellow);"></div>
                         </div>
 
@@ -285,9 +288,8 @@
         function calculerScore() {
             let difference = Math.abs(state.targetPosition - state.guessPosition);
             
-            // Calcul de la précision basé sur l'écart en pourcentage
             if (difference <= 3) {
-                state.pointsGagnes = 4; // Bulles parfaites
+                state.pointsGagnes = 4;
             } else if (difference <= 8) {
                 state.pointsGagnes = 3;
             } else if (difference <= 15) {
@@ -301,7 +303,6 @@
             render();
         }
 
-        // Gestion du Plein Écran
         document.getElementById('btn-fullscreen').addEventListener('click', function () {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
