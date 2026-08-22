@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salle d'Arcade</title>
-     <!-- Favicon du site -->
-  <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Favicon du site -->
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -119,7 +119,37 @@
             padding: 12px 20px; box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
         }
 
-        footer { max-width: 1100px; margin: 54px auto 0; text-align: center; font-family: var(--font-display); font-size: 0.55rem; color: var(--text-muted); }
+        /* --- Footer mis à jour --- */
+        footer {
+            max-width: 1100px;
+            margin: 54px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(124, 58, 237, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (min-width: 640px) {
+            footer {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
     </style>
 </head>
 <body>
@@ -169,7 +199,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- Lien mis à jour avec ton dossier le-killer -->
         <a href="le-killer/" class="carte-jeu pink" data-tag="1 CREDIT">
             <div class="icone">🎯</div>
             <div class="titre-jeu">Le Killer</div>
@@ -177,7 +206,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- Emoji changé pour Insider -->
         <a href="insider/" class="carte-jeu cyan" data-tag="1 CREDIT">
             <div class="icone">🤫</div>
             <div class="titre-jeu">Insider</div>
@@ -186,7 +214,10 @@
         </a>
     </main>
 
-    <footer>&copy; SALLE D'ARCADE — HIGH SCORE 999999</footer>
+    <footer>
+        <span>&copy; SALLE D'ARCADE — HIGH SCORE 999999</span>
+        <span>Pour toutes questions → <a href="mailto:flawz.ad@gmail.com">flawz.ad@gmail.com</a></span>
+    </footer>
 
     <script>
         const btn = document.getElementById('btn-fullscreen');
