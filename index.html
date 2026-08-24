@@ -100,10 +100,10 @@
         }
         .carte-jeu:hover { transform: translate(-3px, -6px); box-shadow: 0 0 0 4px var(--bg-body), 11px 14px 0 rgba(0,0,0,0.6), 0 0 26px var(--glow); }
 
-        .carte-jeu.pink   { --glow: var(--neon-pink); }
-        .carte-jeu.cyan   { --glow: var(--neon-cyan); }
-        .carte-jeu.yellow { --glow: var(--neon-yellow); }
-        .carte-jeu.orange { --glow: var(--neon-orange); }
+        .carte-jeu.pink    { --glow: var(--neon-pink); }
+        .carte-jeu.cyan    { --glow: var(--neon-cyan); }
+        .carte-jeu.yellow  { --glow: var(--neon-yellow); }
+        .carte-jeu.orange  { --glow: var(--neon-orange); }
 
         .icone {
             font-size: 3.4rem; width: 92px; height: 92px; display: grid; place-items: center;
@@ -212,11 +212,18 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- NOUVEAU : Jeu Fréquence (Wavelength) -->
         <a href="frequence/" class="carte-jeu cyan" data-tag="1 CREDIT">
             <div class="icone">📡</div>
             <div class="titre-jeu">Fréquence</div>
             <div class="info-jeu">Lis dans les pensées de ton équipe en plaçant le curseur sur la bonne jauge !</div>
+            <span class="btn-jouer">Jouer &#9654;</span>
+        </a>
+
+        <!-- NOUVEAU : Jeu Time's Up -->
+        <a href="times-up/" class="carte-jeu yellow" data-tag="1 CREDIT">
+            <div class="icone">⏱️</div>
+            <div class="titre-jeu">Time's Up</div>
+            <div class="info-jeu">Fais deviner un maximum de mots en mode Parole ou Mime avant la fin du chrono !</div>
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
     </main>
