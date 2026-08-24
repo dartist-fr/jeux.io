@@ -75,15 +75,14 @@
 
         .panel { background: rgba(0,0,0,0.35); border: 2px solid var(--border-color); padding: 18px; margin-bottom: 16px; text-align: center; }
 
-        /* Style du dessin SVG du pendu */
         .pendu-container {
             display: flex;
             justify-content: center;
             margin-bottom: 15px;
         }
         svg {
-            width: 140px;
-            height: 150px;
+            width: 130px;
+            height: 130px;
         }
         .pendu-part {
             stroke: var(--neon-pink);
@@ -97,7 +96,6 @@
             stroke-width: 4;
         }
 
-        /* Champ de saisie pour mot personnalisé */
         .input-custom {
             width: 100%;
             padding: 12px;
@@ -112,15 +110,29 @@
         }
         .input-custom:focus { border-color: var(--accent); }
 
-        /* Mot masqué (tirets) */
+        /* Conteneur propre pour les lettres du mot */
         .mot-cache {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 14px;
             font-family: var(--font-display);
-            font-size: 1.4rem;
-            letter-spacing: 6px;
+            font-size: 1.3rem;
             color: #fff;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.4);
-            word-break: break-all;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px dashed var(--border-color);
+            text-shadow: 0 0 8px rgba(255,255,255,0.4);
+        }
+        .lettre-slot {
+            display: inline-flex;
+            align-items: flex-end;
+            justify-content: center;
+            width: 28px;
+            height: 35px;
+            border-bottom: 4px solid var(--accent);
+            padding-bottom: 2px;
         }
 
         /* Clavier virtuel */
@@ -188,14 +200,14 @@
 
     <script>
         const LISTE_MOTS = [
-            "ARCADE", "PIXEL", "MANETTE", "CONSOLE", "JOYSICK", "JEU", "CLAVIER", 
+            "ARCADE", "PIXEL", "MANETTE", "CONSOLE", "JOYSTICK", "JEU", "CLAVIER", 
             "ECRAN", "SCORE", "NIVEAU", "VICTOIRE", "BONUS", "PISTE", "COURSE", 
             "FUTUR", "VIRAGE", "CASQUE", "CAMERA", "PHOTO", "STUDIO", "STADE", 
             "EQUIPE", "MATCH", "TERRAIN", "ARBITRE", "TENNIS", "BALLON", "CHAMPION"
         ];
 
         let state = {
-            screen: "setup", // "setup", "custom_input", "jeu"
+            screen: "setup",
             motSecret: "",
             lettresTrouvees: [],
             erreurs: 0,
@@ -213,7 +225,6 @@
             let input = document.getElementById("custom-word-input");
             let mot = input.value.trim().toUpperCase();
             
-            // Validation basique (uniquement des lettres majuscules sans espaces)
             let regex = /^[A-ZÉÈÀÊÂÎÔÛÇ]+$/;
             if (!mot || !regex.test(mot)) {
                 alert("Entre un mot valide (lettres uniquement, sans espaces).");
@@ -278,18 +289,18 @@
                 `;
             }
             else if (state.screen === "jeu") {
-                // Gestion de l'affichage progressif du SVG du pendu (6 parties : 1:potence, 2:tête, 3:corps, 4:bras, 5:jambes)
-                // Note : state.erreurs va de 0 à 6
-                let p1 = state.erreurs >= 1 ? "opacity: 1" : "opacity: 0"; // Tête
-                let p2 = state.erreurs >= 2 ? "opacity: 1" : "opacity: 0"; // Corps
-                let p3 = state.erreurs >= 3 ? "opacity: 1" : "opacity: 0"; // Bras gauche
-                let p4 = state.erreurs >= 4 ? "opacity: 1" : "opacity: 0"; // Bras droit
-                let p5 = state.erreurs >= 5 ? "opacity: 1" : "opacity: 0"; // Jambe gauche
-                let p6 = state.erreurs >= 6 ? "opacity: 1" : "opacity: 0"; // Jambe droite (Game Over)
+                let p1 = state.erreurs >= 1 ? "opacity: 1" : "opacity: 0";
+                let p2 = state.erreurs >= 2 ? "opacity: 1" : "opacity: 0";
+                let p3 = state.erreurs >= 3 ? "opacity: 1" : "opacity: 0";
+                let p4 = state.erreurs >= 4 ? "opacity: 1" : "opacity: 0";
+                let p5 = state.erreurs >= 5 ? "opacity: 1" : "opacity: 0";
+                let p6 = state.erreurs >= 6 ? "opacity: 1" : "opacity: 0";
 
+                // On affiche la lettre si elle est trouvée, sinon un espace vide (le souligné CSS fait office de tiret propre)
                 let affichageMot = state.motSecret.split('').map(lettre => {
-                    return state.lettresTrouvees.includes(lettre) ? lettre : "_";
-                }).join(" ");
+                    let charAffiche = state.lettresTrouvees.includes(lettre) ? lettre : "&nbsp;";
+                    return `<span class="lettre-slot">${charAffiche}</span>`;
+                }).join("");
 
                 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 let clavierHtml = alphabet.split('').map(lettre => {
@@ -312,24 +323,16 @@
                     
                     <div class="pendu-container">
                         <svg viewBox="0 0 120 130">
-                            <!-- Potence fixe -->
                             <line x1="10" y1="120" x2="90" y2="120" class="structure" />
                             <line x1="30" y1="120" x2="30" y2="10" class="structure" />
                             <line x1="30" y1="10" x2="80" y2="10" class="structure" />
                             <line x1="80" y1="10" x2="80" y2="30" class="structure" />
                             
-                            <!-- Parties du pendu animées selon les erreurs -->
-                            <!-- 1. Tête -->
                             <circle cx="80" cy="42" r="10" class="pendu-part" style="${p1}" />
-                            <!-- 2. Corps -->
                             <line x1="80" y1="52" x2="80" y2="85" class="pendu-part" style="${p2}" />
-                            <!-- 3. Bras gauche -->
                             <line x1="80" y1="62" x2="65" y2="75" class="pendu-part" style="${p3}" />
-                            <!-- 4. Bras droit -->
                             <line x1="80" y1="62" x2="95" y2="75" class="pendu-part" style="${p4}" />
-                            <!-- 5. Jambe gauche -->
                             <line x1="80" y1="85" x2="65" y2="105" class="pendu-part" style="${p5}" />
-                            <!-- 6. Jambe droite -->
                             <line x1="80" y1="85" x2="95" y2="105" class="pendu-part" style="${p6}" />
                         </svg>
                     </div>
