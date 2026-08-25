@@ -49,7 +49,7 @@
             z-index: 100; mix-blend-mode: multiply;
         }
 
-        .top-bar { max-width: 900px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center; }
+        .top-bar { max-width: 950px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center; }
         .btn-back, .btn-fs {
             display: inline-flex; align-items: center; gap: 8px;
             font-family: var(--font-display); font-size: 0.5rem;
@@ -60,7 +60,7 @@
         }
 
         .container {
-            max-width: 900px; margin: 0 auto;
+            max-width: 950px; margin: 0 auto;
             background: var(--card-bg); border: 2px solid var(--accent);
             padding: 24px 20px;
             box-shadow: 0 0 0 4px var(--bg-color), 8px 8px 0 rgba(0,0,0,0.6), 0 0 30px rgba(255,46,136,0.25);
@@ -78,10 +78,11 @@
 
         .panel { background: rgba(0,0,0,0.35); border: 2px solid var(--border-color); padding: 18px; margin-bottom: 16px; text-align: center; }
 
+        /* GRILLE OPTIMISÉE : Plus de cartes par ligne (minmax réduit à 100px) */
         .grille-persos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+            gap: 10px;
             margin-bottom: 20px;
         }
 
@@ -89,14 +90,14 @@
             background: #07040f;
             border: 2px solid var(--border-color);
             border-radius: 4px;
-            padding: 10px 6px;
+            padding: 8px 4px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            min-height: 160px;
+            min-height: 145px;
             position: relative;
         }
 
@@ -117,18 +118,18 @@
 
         /* Cadre rond et propre pour les photos, positionné au-dessus des lignes de balayage */
         .avatar-container {
-            width: 70px;
-            height: 70px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             border: 2px solid var(--accent);
             overflow: hidden;
             background: #110822;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 101; /* Passe au-dessus du filtre de lignes de la page */
+            z-index: 101; /* Passe au-dessus du filtre de balayage de la page */
         }
 
         .avatar-container img {
@@ -139,16 +140,16 @@
 
         .carte-perso .nom {
             font-family: var(--font-display);
-            font-size: 0.5rem;
+            font-size: 0.42rem;
             color: #fff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             word-break: break-word;
         }
 
         .carte-perso .tag {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-sub);
-            line-height: 1.1;
+            line-height: 1;
         }
 
         .btn-action {
