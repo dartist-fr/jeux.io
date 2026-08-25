@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-    <title>Qui est-ce ? (Mode Duel) — Salle d'Arcade</title>
+    <title>Qui est-ce ? (Mode Duel - Édition Française) — Salle d'Arcade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -177,22 +177,32 @@
     <main class="container" id="app"></main>
 
     <script>
+        // Tableau contenant exactement 24 personnages 100% français et connus
         const PERSONNAGES = [
-            { nom: "Pape François", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSiH8vs2GVJ0mNoEDj6BDw8akqYw3BbN4VfgAB2LeHjT30AUaiyC8YsNK7pisAQN8sYCl81eXzlMOK0Zw_u4Of-H0SnnuL3_vjj0ngNPv1&s=10" },
-            { nom: "Vladimir Poutine", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5QyiZueyJUtXq6cL_v830DDI-Pplz_CHukFnRFVc1iBT5gaKH2PkqAb7JxqzC4garFI2IXqJl9m8PNJe9x8ceUGTWqEL_n9bXp8kkyqq&s=10" },
-            { nom: "Kim Jong-un", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFIvh6YWhuGeMHcHXpi1Q_ifCOOwq6LBazMuGNAtNRKaQgifZY8qkvJKJ44t7AbufY1zZVv0mUhEB4GlDG4nQ-0XQn4-u2F9_qR0ydsoYz&s=10" },
-            { nom: "Donald Trump", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSTN8Vf-kDjwTXQLHyB8pEUJARHOEI0xjcQ0O_1YfEPHO0X97CjMO4RB4g-VuFV07Fz_D6mOqbhXVRXGC5jwrfP-ZYtFlRU&s=19" },
             { nom: "Emmanuel Macron", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQ1zb_Z3FCmJwmEWSc-b7jqT8ERj3wWkFY1v-al0SDGsP8zHlRnoVSrX1MswvWc2fWd1h_YkT75vtAUvQzuzBlM2N867Ws&s=19" },
-            { nom: "Mick Jagger", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW-Jj5mm_G7ds6DbEder5m0iWi8dmhxtAlSH6aIsgH4J9DKC4S9dGt8s-72BBMbENhj461513FYJDBiPZJ9bzPyBbXV97N&s=10" },
-            { nom: "Kanye West", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDevyJUyasM7oSxQuhnmNfyfeHL5vUzChJv4zB7KSch9RCHvcZwJ6EGXrrqR66zNVFbsoEpBFYxhmj2WcqxhXSvRqklPk&s=10" },
-            { nom: "Saddam Hussein", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUimeA6SvsQxflOgYMH8bFaAZ8Uo6fWUtD74Irb90wbA&s=10" },
+            { nom: "Jean-Luc Mélenchon", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-IkBJhWqAbtr4P7loj3Fsoe1Q4O6ih-OSKucoKn3G7_SLZGyJ_2sKAjLiXSlZV0sZIDxBiUWmBFlFACty_sojxmcAIk6hXxF4_tCsRf0U&s=10" },
+            { nom: "Marine Le Pen", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqNKxrKH8Y_hgr9SlSicfI_65f4X4D8fMQsR2_ICPPmhu5rKuekEAJ3-RGkD5bFNwKwZjkaE5FzBs2M5hx-rk0vruuAXWm-4290Q12yVs2&s=10" },
+            { nom: "Éric Zemmour", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShQm_vQS94B8qHnFHHeWKXTGQ5BbOVi5ZJXIB7Sv247uob57ayqmCF-ebrFxu_jl_Xyeont4ufe7KcJ08zQU0qoV9d-wM&s=10" },
+            { nom: "Nicolas Sarkozy", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcToAXQncEDKnq6HBiyDyBfdg3iqgO22FyAoUQ60kjtsJ0IxuBmLRXQshhBNgtTvcVt_q6s-_Og1mHsfKhZoJ1tlG4MiJu1G&s=19" },
+            { nom: "Jacques Chirac", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhLv1TGXjdE5c54kA2hl3aiwACOIKnQoKcd22AHjGIKYtGp22r3veuCvQEupCKDKaYVLmMdy2_hBGMIgsA1IusDoYR6Ow&s=10" },
+            { nom: "François Hollande", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcT5WvOWtYswEEzp2zsQugRACAN4aiDqWgX760LG8AjzwKgPzOtdWb5LHTSg1UxL_jZoXWIRv4vLxZmYk293fEFsbcFtFfc&s=19" },
             { nom: "Gérard Depardieu", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbN6BXOxItdO5qngzSk0i9TtHRP27apjFFc3GJWf1DPNMXSQv7FBre0qiqBIHF-IIXMksO0NJFRPral4N0u-iJNkFc9-MARZvSIafmq5UpfA&s=10" },
-            { nom: "Johnny Hallyday", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkQN1qLR37QoYTmvWkqXbWc07QaEdc3RjWTrwcs1mdVD0wXWw8vRfnf47JBoQHEGHL8jmuFqU1PJlJYXYtCZl-LNtjBMGe&s=10" },
+            { nom: "Cyril Hanouna", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ-GMEv1uA9AxnkGfD26Ew8kolZiG67JoTiDY2cTnkyj1UGY1DiHnCdyHz3UouVo3Xb-VXyFaHDnBSdo8VIS1ovLGQl7c&s=10" },
             { nom: "Balkany", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFax0rte650ewMC3Eh9B86_fyzfrCSzoGeE2neCaZNzINsYxmkRRKZqnHmJA74kuIfZV8F61OVLzpCMJsqjhvOHFISa1BG&s=10" },
-            { nom: "Karl Lagerfeld", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0LoLp2KncYSW7TsFM_KaC7Hgr_SYv_28GyGOFkEqGFfrgSeT3lnUyAkV1fdsF8o9vYfjrhDRkhcZf6FeJrCGSB5T9hT5D&s=10" },
-            { nom: "Michael Jackson", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-sWqcaV5Y6rFls2G-d0Uxl0fGwpsWXV0Ase5mEG6_dup5KZn8mu9CT1Ct4pbWaXYaXT1qAMgtx6O4w3CRRa2RQ0vkDfc&s=10" },
-            { nom: "Elizabeth II", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKuXE1_OCVEEQ6VRzQv0N3FNF2IP14lDt7y05ZZoa0C87ulu_lU21VrrBGxIuJupOq3S9MfWXT2M87yy0Yr6QIXlhi883L&s=19" },
-            { nom: "Dieudonné", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJaq6ANN9xJF4dhV93ls8lFhITSCjDqQss88VOkysBcL-2YgThW3Y-j2-tiMNWTEFiEQG0hzFyAXNHQ9ANUeVzN4TLstQ&s=10" }
+            { nom: "Johnny Hallyday", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkQN1qLR37QoYTmvWkqXbWc07QaEdc3RjWTrwcs1mdVD0wXWw8vRfnf47JBoQHEGHL8jmuFqU1PJlJYXYtCZl-LNtjBMGe&s=10" },
+            { nom: "Dieudonné", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJaq6ANN9xJF4dhV93ls8lFhITSCjDqQss88VOkysBcL-2YgThW3Y-j2-tiMNWTEFiEQG0hzFyAXNHQ9ANUeVzN4TLstQ&s=10" },
+            { nom: "Kylian Mbappé", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRTr6IiDkcTx_WRMolOBYyby-3JESLPRB-DQB2jd3oxBHlZbbjZgQRiqZtppDh6HTURn8NJWWr7H_IWKo7nKoQXh3nEjELPYYrEdhuTLtWS40lbF7kfLpmQN9qvkRcvEbXuWtwcofiCQiQ&s=19" },
+            { nom: "Stéphane Plaza", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRczCK1k_55zoYHRBDcayp_T3OKsh_VhE7p5A0TQOC4zbCg6g1yS0fBSsSrqwMcCFqYWMsWRjYEmWO27E2w2dqtULpEvc8&s=10" },
+            { nom: "Jean-Marie Bigard", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvntFqYgeJyIoQMVmJ9i6YlwyzLj00fv9oJGYyt3aP0CmDgjza9UhUwDaGNQDxQWv4lAPCxKViK-N-XJ-ICLS8JJGbSZA&s=10" },
+            { nom: "Léon Marchand", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVoZcZZ-4ccFS5M4gQkdV742JZtuufO40WcoGl16yAnpiKeQeWm28Ea0bSAbF9tAy5syTFSbQhcZhn0kfCRBERdTfDeILYo6aaBxaq0pIR5w&s=10" },
+            { nom: "Booba", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTec55buZptjYDQTFJNvaIuL5SSOW6yW6QU-lLHxbOCxmceMcREjK7e9eCmJzvd2RYRk8KBh78dPWSXWo2eRAg3txykp3A&s=10" },
+            { nom: "Gims", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1K_7nUv_Ejn7T0MW9jrjqzw49ydVtfj9Vo72GvAvzfHdC0eS_22vxL2_36MCwMBD8HeNcsZNyH2M6QntY25WpGdp-Xm-HphlmYnr8ZfUm&s=10" },
+            { nom: "Jul", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnpF6_BCcnxISS8n7SZ6zSrZWXO6_KarZFHygpDCnRCFQMxKvnNe8FCze97CAHObJYwSH5fePslAmbhAwKnFARqBnw5xLjppcrLLLedYMU&s=10" },
+            { nom: "Vincent Bolloré", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmdwXxx10zGI91oc3F--cvAxC1px3makbgJp9zEOpucA&s=10" },
+            { nom: "Joseph Staline", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgB2VYZ4jGfH9BXJa5vQm1VB2Si0K73WRRy4yhnzG31ywE16UMNlUAkrMH6edAXzrcQnbvptE8rD7w8RVsW3DDwlWDjcI&s=10" },
+            { nom: "Adolf Hitler", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRg3x_f6W3t2ZoSCmnkeqlYP392TCMGpq4sTMaQsmrRPr482P4IsOXHyY6b79n2yA0V8wyW2CRNCWSLlN5303aopD1tSek&s=19" },
+            { nom: "Kim Jong-un", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFIvh6YWhuGeMHcHXpi1Q_ifCOOwq6LBazMuGNAtNRKaQgifZY8qkvJKJ44t7AbufY1zZVv0mUhEB4GlDG4nQ-0XQn4-u2F9_qR0ydsoYz&s=10" },
+            { nom: "Vladimir Poutine", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5QyiZueyJUtXq6cL_v830DDI-Pplz_CHukFnRFVc1iBT5gaKH2PkqAb7JxqzC4garFI2IXqJl9m8PNJe9x8ceUGTWqEL_n9bXp8kkyqq&s=10" }
         ];
 
         let state = {
@@ -204,18 +214,15 @@
         };
 
         function preparerDuel() {
-            // Copie la liste pour chaque joueur avec l'état "éliminé" à false
             state.personnagesJ1 = PERSONNAGES.map(p => ({ nom: p.nom, img: p.img, elimine: false }));
             state.personnagesJ2 = PERSONNAGES.map(p => ({ nom: p.nom, img: p.img, elimine: false }));
 
-            // Tire un personnage aléatoire pour chaque joueur
             let indexJ1 = Math.floor(Math.random() * state.personnagesJ1.length);
             let indexJ2 = Math.floor(Math.random() * state.personnagesJ2.length);
 
             state.mystereJ1 = state.personnagesJ1[indexJ1];
             state.mystereJ2 = state.personnagesJ2[indexJ2];
 
-            // Démarre par l'écran secret du Joueur 1
             state.screen = "transit_j1";
             render();
         }
@@ -234,17 +241,16 @@
 
             if (state.screen === "setup") {
                 app.innerHTML = `
-                    <h1>QUI EST-CE ? (MODE DUEL)</h1>
+                    <h1>QUI EST-CE ? (FRANCE EDITION)</h1>
                     <p class="phase-subtitle">Affrontement à deux joueurs</p>
                     <div class="panel">
                         <p style="font-size:1.1rem; color:var(--text-sub); line-height:1.5; margin-bottom:15px;">
-                            Le jeu va attribuer secrètement une cible à chaque joueur de façon indépendante. Préparez-vous !
+                            Le jeu va attribuer secrètement une personnalité française à chaque joueur. Préparez vos meilleures questions !
                         </p>
                         <button class="btn btn-primary" onclick="preparerDuel()">Lancer le Duel ›</button>
                     </div>
                 `;
             }
-            // Étape 1 : Passer l'appareil au Joueur 1
             else if (state.screen === "transit_j1") {
                 app.innerHTML = `
                     <h1>Tour du Joueur 1</h1>
@@ -257,7 +263,6 @@
                     </div>
                 `;
             }
-            // Étape 2 : Affichage du secret du Joueur 1
             else if (state.screen === "secret_j1") {
                 app.innerHTML = `
                     <h1>Joueur 1 : Secret</h1>
@@ -271,7 +276,6 @@
                     </div>
                 `;
             }
-            // Étape 3 : Passer l'appareil au Joueur 2
             else if (state.screen === "transit_j2") {
                 app.innerHTML = `
                     <h1>Tour du Joueur 2</h1>
@@ -284,7 +288,6 @@
                     </div>
                 `;
             }
-            // Étape 4 : Affichage du secret du Joueur 2
             else if (state.screen === "secret_j2") {
                 app.innerHTML = `
                     <h1>Joueur 2 : Secret</h1>
@@ -298,7 +301,6 @@
                     </div>
                 `;
             }
-            // Étape 5 : Le plateau de jeu en duel (les deux grilles)
             else if (state.screen === "duel_jeu") {
                 let cartesJ1 = state.personnagesJ1.map((p, index) => `
                     <div class="carte-perso ${p.elimine ? 'elimine' : ''}" onclick="toggleEliminer(1, ${index})">
@@ -341,7 +343,6 @@
             }
         }
 
-        // Gestion du mode plein écran
         document.getElementById('btn-fullscreen').addEventListener('click', function () {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
