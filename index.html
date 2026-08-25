@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salle d'Arcade</title>
@@ -57,6 +57,12 @@
             background: rgba(34, 230, 255, 0.06); box-shadow: 0 0 0 2px var(--bg-body), 4px 4px 0 rgba(34, 230, 255, 0.35);
         }
         .credits { font-family: var(--font-display); font-size: 0.6rem; color: var(--neon-yellow); text-shadow: 0 0 8px rgba(255, 225, 77, 0.6); }
+        
+        /* STYLE AJOUTÉ POUR AGRANDIR L'INFINI */
+        .credits-infinity {
+            font-size: 1.1rem; 
+        }
+
         .top-right { display: flex; align-items: center; gap: 16px; }
 
         .btn-fs {
@@ -233,7 +239,8 @@
     <div class="top-bar">
         <a href="../" class="btn-back">&lsaquo; HUB</a>
         <div class="top-right">
-            <span class="credits">CREDITS: &infin;</span>
+            <!-- MODIFICATION ICI : Ajout du span class="credits-infinity" -->
+            <span class="credits">CREDITS: <span class="credits-infinity">&infin;</span></span>
             <button type="button" id="btn-fullscreen" class="btn-fs">
                 <span class="fs-label">PLEIN ÉCRAN</span>
             </button>
@@ -256,7 +263,6 @@
 
     <h2 id="multijoueurs" class="section-titre">🕹️ Jeux Multijoueurs & Ambiance</h2>
     <main class="grid-jeux">
-        <!-- 1. Tu Préfères (Gros succès de soirée mis en premier) -->
         <a href="tu-preferes/" class="carte-jeu yellow" data-tag="HARDCORE">
             <div class="icone">⚖️</div>
             <div class="titre-jeu">Tu Préfères ?</div>
@@ -264,7 +270,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 2. Time's Up (Classique incontournable) -->
         <a href="times-up/" class="carte-jeu yellow" data-tag="PARTY">
             <div class="icone">⏱️</div>
             <div class="titre-jeu">Time's Up</div>
@@ -272,7 +277,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 3. Loup-Garou -->
         <a href="loup-garou/" class="carte-jeu yellow" data-tag="PARTY">
             <div class="icone">🐺</div>
             <div class="titre-jeu">Loup-Garou</div>
@@ -280,7 +284,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 4. Undercover -->
         <a href="undercover/" class="carte-jeu pink" data-tag="PARTY">
             <div class="icone">🕵️</div>
             <div class="titre-jeu">Undercover</div>
@@ -288,7 +291,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 5. Qui est-ce ? -->
         <a href="qui-est-ce/" class="carte-jeu pink" data-tag="HUMOUR NOIR">
             <div class="icone">💀</div>
             <div class="titre-jeu">Qui est-ce ?</div>
@@ -296,7 +298,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 6. Le Killer -->
         <a href="le-killer/" class="carte-jeu pink" data-tag="SOIRÉE">
             <div class="icone">🎯</div>
             <div class="titre-jeu">Le Killer</div>
@@ -304,7 +305,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 7. Insider -->
         <a href="insider/" class="carte-jeu cyan" data-tag="PARTY">
             <div class="icone">🤫</div>
             <div class="titre-jeu">Insider</div>
@@ -312,7 +312,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 8. Fréquence -->
         <a href="frequence/" class="carte-jeu cyan" data-tag="ÉQUIPE">
             <div class="icone">📡</div>
             <div class="titre-jeu">Fréquence</div>
@@ -320,7 +319,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 9. Le Bobard -->
         <a href="le-bobard/" class="carte-jeu orange" data-tag="PARTY">
             <div class="icone">🤥</div>
             <div class="titre-jeu">Le Bobard</div>
@@ -328,7 +326,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 10. Morpion -->
         <a href="morpion/" class="carte-jeu cyan" data-tag="2 JOUEURS">
             <div class="icone">❌</div>
             <div class="titre-jeu">Morpion</div>
@@ -336,7 +333,6 @@
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
 
-        <!-- 11. Le Pendu -->
         <a href="pendu/" class="carte-jeu cyan" data-tag="2 JOUEURS">
             <div class="icone">🪢</div>
             <div class="titre-jeu">Le Pendu</div>
