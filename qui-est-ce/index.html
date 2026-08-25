@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer">
+    
     <title>Qui est-ce ? (Version Grinçante) — Salle d'Arcade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,6 +41,7 @@
             font-size: 1.2rem;
         }
 
+        /* L'effet de balayage rétro de la page */
         body::after {
             content: "";
             position: fixed; inset: 0; pointer-events: none;
@@ -75,7 +78,6 @@
 
         .panel { background: rgba(0,0,0,0.35); border: 2px solid var(--border-color); padding: 18px; margin-bottom: 16px; text-align: center; }
 
-        /* Grille des personnages style plateau de jeu avec vraies photos */
         .grille-persos {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -94,7 +96,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            min-height: 150px;
+            min-height: 160px;
             position: relative;
         }
 
@@ -113,18 +115,20 @@
             text-decoration: line-through;
         }
 
-        /* Conteneur de la photo portrait */
+        /* Cadre rond et propre pour les photos, positionné au-dessus des lignes de balayage */
         .avatar-container {
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--accent);
             overflow: hidden;
             background: #110822;
             margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 101; /* Passe au-dessus du filtre de lignes de la page */
         }
 
         .avatar-container img {
@@ -142,7 +146,7 @@
         }
 
         .carte-perso .tag {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-sub);
             line-height: 1.1;
         }
@@ -176,24 +180,22 @@
     <main class="container" id="app"></main>
 
     <script>
-        // Liste de personnalités avec des liens directs vers de vrais portraits officiels / Wikimedia
         const PERSONNAGES = [
-            { nom: "Pape François", desc: "Le boss du Vatican", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Pope_Francis_2013_%28cropped%29.jpg/220px-Pope_Francis_2013_%28cropped%29.jpg" },
-            { nom: "Vladimir Poutine", desc: "Torse nu l'hiver", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Vladimir_Putin_%282024-05-07%29_page1_%28cropped%29.jpg/220px-Vladimir_Putin_%282024-05-07%29_page1_%28cropped%29.jpg" },
-            { nom: "Kim Jong-un", desc: "Coupe iconique", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Kim_Jong_Un_in_2018_%28cropped%29.jpg/220px-Kim_Jong_Un_in_2018_%28cropped%29.jpg" },
-            { nom: "Donald Trump", desc: "Bronzage orange", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/220px-Donald_Trump_official_portrait.jpg" },
-            { nom: "Emmanuel Macron", desc: "Fan de couteaux-tirs", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Emmanuel_Macron_2022_%28cropped%29.jpg/220px-Emmanuel_Macron_2022_%28cropped%29.jpg" },
-            { nom: "Mick Jagger", desc: "Survivra à tout", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mick_Jagger_2017.jpg/220px-Mick_Jagger_2017.jpg" },
-            { nom: "Kanye West", desc: "Génie incompris", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kanye_West_2009.jpg/220px-Kanye_West_2009.jpg" },
-            { nom: "Saddam Hussein", desc: "Fan de cache-cache", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Saddam_Hussein_passport.jpg/220px-Saddam_Hussein_passport.jpg" },
-            { nom: "Gérard Depardieu", desc: "Bons crus russes", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/G%C3%A9rard_Depardieu_Cannes_2016.jpg/220px-G%C3%A9rard_Depardieu_Cannes_2016.jpg" },
-            { nom: "Johnny Hallyday", desc: "Toujours là", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Johnny_Hallyday_2009.jpg/220px-Johnny_Hallyday_2009.jpg" },
-            { nom: "Balkany", desc: "Résident en cellule", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Patrick_Balkany_2013.jpg/220px-Patrick_Balkany_2013.jpg" },
-            { nom: "Karl Lagerfeld", desc: "Lunettes indoor", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Karl_Lagerfeld_2012.jpg/220px-Karl_Lagerfeld_2012.jpg" },
-            { nom: "Michael Jackson", desc: "Maître du moonwalk", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Michael_Jackson_in_1988.jpg/220px-Michael_Jackson_in_1988.jpg" },
-            { nom: "Elizabeth II", desc: "Immortelle (ex)", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Queen_Elizabeth_II_in_March_2015.jpg/220px-Queen_Elizabeth_II_in_March_2015.jpg" },
-            { nom: "Dieudonné", desc: "Polémique pro", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Dieudonn%C3%A9_M'bala_M'bala_2012.jpg/220px-Dieudonn%C3%A9_M'bala_M'bala_2012.jpg" },
-            { nom: "Staline", desc: "Moustachu autoritaire", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stalin_1943.jpg/220px-Stalin_1943.jpg" }
+            { nom: "Pape François", desc: "Le boss du Vatican", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSiH8vs2GVJ0mNoEDj6BDw8akqYw3BbN4VfgAB2LeHjT30AUaiyC8YsNK7pisAQN8sYCl81eXzlMOK0Zw_u4Of-H0SnnuL3_vjj0ngNPv1&s=10" },
+            { nom: "Vladimir Poutine", desc: "Torse nu l'hiver", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU5QyiZueyJUtXq6cL_v830DDI-Pplz_CHukFnRFVc1iBT5gaKH2PkqAb7JxqzC4garFI2IXqJl9m8PNJe9x8ceUGTWqEL_n9bXp8kkyqq&s=10" },
+            { nom: "Kim Jong-un", desc: "Coupe iconique", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFIvh6YWhuGeMHcHXpi1Q_ifCOOwq6LBazMuGNAtNRKaQgifZY8qkvJKJ44t7AbufY1zZVv0mUhEB4GlDG4nQ-0XQn4-u2F9_qR0ydsoYz&s=10" },
+            { nom: "Donald Trump", desc: "Bronzage orange", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSTN8Vf-kDjwTXQLHyB8pEUJARHOEI0xjcQ0O_1YfEPHO0X97CjMO4RB4g-VuFV07Fz_D6mOqbhXVRXGC5jwrfP-ZYtFlRU&s=19" },
+            { nom: "Emmanuel Macron", desc: "Fan de couteaux-tirs", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQ1zb_Z3FCmJwmEWSc-b7jqT8ERj3wWkFY1v-al0SDGsP8zHlRnoVSrX1MswvWc2fWd1h_YkT75vtAUvQzuzBlM2N867Ws&s=19" },
+            { nom: "Mick Jagger", desc: "Survivra à tout", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW-Jj5mm_G7ds6DbEder5m0iWi8dmhxtAlSH6aIsgH4J9DKC4S9dGt8s-72BBMbENhj461513FYJDBiPZJ9bzPyBbXV97N&s=10" },
+            { nom: "Kanye West", desc: "Génie incompris", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDevyJUyasM7oSxQuhnmNfyfeHL5vUzChJv4zB7KSch9RCHvcZwJ6EGXrrqR66zNVFbsoEpBFYxhmj2WcqxhXSvRqklPk&s=10" },
+            { nom: "Saddam Hussein", desc: "Fan de cache-cache", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUimeA6SvsQxflOgYMH8bFaAZ8Uo6fWUtD74Irb90wbA&s=10" },
+            { nom: "Gérard Depardieu", desc: "Bons crus russes", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbN6BXOxItdO5qngzSk0i9TtHRP27apjFFc3GJWf1DPNMXSQv7FBre0qiqBIHF-IIXMksO0NJFRPral4N0u-iJNkFc9-MARZvSIafmq5UpfA&s=10" },
+            { nom: "Johnny Hallyday", desc: "Toujours là", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkQN1qLR37QoYTmvWkqXbWc07QaEdc3RjWTrwcs1mdVD0wXWw8vRfnf47JBoQHEGHL8jmuFqU1PJlJYXYtCZl-LNtjBMGe&s=10" },
+            { nom: "Balkany", desc: "Résident en cellule", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFax0rte650ewMC3Eh9B86_fyzfrCSzoGeE2neCaZNzINsYxmkRRKZqnHmJA74kuIfZV8F61OVLzpCMJsqjhvOHFISa1BG&s=10" },
+            { nom: "Karl Lagerfeld", desc: "Lunettes indoor", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0LoLp2KncYSW7TsFM_KaC7Hgr_SYv_28GyGOFkEqGFfrgSeT3lnUyAkV1fdsF8o9vYfjrhDRkhcZf6FeJrCGSB5T9hT5D&s=10" },
+            { nom: "Michael Jackson", desc: "Maître du moonwalk", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-sWqcaV5Y6rFls2G-d0Uxl0fGwpsWXV0Ase5mEG6_dup5KZn8mu9CT1Ct4pbWaXYaXT1qAMgtx6O4w3CRRa2RQ0vkDfc&s=10" },
+            { nom: "Elizabeth II", desc: "Immortelle (ex)", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTKuXE1_OCVEEQ6VRzQv0N3FNF2IP14lDt7y05ZZoa0C87ulu_lU21VrrBGxIuJupOq3S9MfWXT2M87yy0Yr6QIXlhi883L&s=19" },
+            { nom: "Dieudonné", desc: "Polémique pro", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJaq6ANN9xJF4dhV93ls8lFhITSCjDqQss88VOkysBcL-2YgThW3Y-j2-tiMNWTEFiEQG0hzFyAXNHQ9ANUeVzN4TLstQ&s=10" },
         ];
 
         let state = {
@@ -221,7 +223,7 @@
                     <p class="phase-subtitle">Édition Spéciale : Personnalités & Humour Noir</p>
                     <div class="panel">
                         <p style="font-size:1.1rem; color:var(--text-sub); margin-bottom:20px; line-height:1.4;">
-                            Règle : Chaque joueur choisit secrètement une personnalité de la grille. À tour de rôle, posez des questions fermées (ex: <em>"Est-ce qu'il/elle est déjà allé(e) en prison ?"</em>) pour éliminer les suspects en cliquant sur leurs cartes !
+                            Règle : Chaque joueur choisit secrètement une personnalité de la grille. À tour de rôle, posez des questions fermées pour éliminer les suspects en cliquant sur leurs cartes !
                         </p>
                         <button class="btn-action" onclick="demarrerPartie()">Lancer la partie 🚀</button>
                     </div>
