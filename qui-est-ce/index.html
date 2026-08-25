@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-    <title>Qui est-ce ? (Mode Duel - Édition Française) — Salle d'Arcade</title>
+    <title>Qui est-ce ? (Modes de jeu)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -177,7 +177,6 @@
     <main class="container" id="app"></main>
 
     <script>
-        // Tableau contenant exactement 24 personnages 100% français et connus
         const PERSONNAGES = [
             { nom: "Emmanuel Macron", img: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQ1zb_Z3FCmJwmEWSc-b7jqT8ERj3wWkFY1v-al0SDGsP8zHlRnoVSrX1MswvWc2fWd1h_YkT75vtAUvQzuzBlM2N867Ws&s=19" },
             { nom: "Jean-Luc Mélenchon", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-IkBJhWqAbtr4P7loj3Fsoe1Q4O6ih-OSKucoKn3G7_SLZGyJ_2sKAjLiXSlZV0sZIDxBiUWmBFlFACty_sojxmcAIk6hXxF4_tCsRf0U&s=10" },
@@ -206,12 +205,30 @@
         ];
 
         let state = {
-            screen: "setup",
+            screen: "setup", // "setup", "transit_j1", "secret_j1", "transit_j2", "secret_j2", "duel_jeu", "solo_jeu"
+            mode: 2,         // 1 = Un seul tableau, 2 = Deux tableaux collés (Duel)
+            personnagesSolo: [],
+            mystereSolo: null,
             personnagesJ1: [],
             personnagesJ2: [],
             mystereJ1: null,
             mystereJ2: null
         };
+
+        function choisirMode(modeChoisi) {
+            state.mode = modeChoisi;
+            if (modeChoisi === 1) {
+                // Mode Solo : Un seul tableau
+                state.personnagesSolo = PERSONNAGES.map(p => ({ nom: p.nom, img: p.img, elimine: false }));
+                let randomIndex = Math.floor(Math.random() * state.personnagesSolo.length);
+                state.mystereSolo = state.personnagesSolo[randomIndex];
+                state.screen = "solo_jeu";
+            } else {
+                // Mode Duel : Deux tableaux collés
+                preparerDuel();
+            }
+            render();
+        }
 
         function preparerDuel() {
             state.personnagesJ1 = PERSONNAGES.map(p => ({ nom: p.nom, img: p.img, elimine: false }));
@@ -228,10 +245,14 @@
         }
 
         function toggleEliminer(joueur, index) {
-            if (joueur === 1) {
-                state.personnagesJ1[index].elimine = !state.personnagesJ1[index].elimine;
+            if (state.mode === 1) {
+                state.personnagesSolo[index].elimine = !state.personnagesSolo[index].elimine;
             } else {
-                state.personnagesJ2[index].elimine = !state.personnagesJ2[index].elimine;
+                if (joueur === 1) {
+                    state.personnagesJ1[index].elimine = !state.personnagesJ1[index].elimine;
+                } else {
+                    state.personnagesJ2[index].elimine = !state.personnagesJ2[index].elimine;
+                }
             }
             render();
         }
@@ -242,12 +263,44 @@
             if (state.screen === "setup") {
                 app.innerHTML = `
                     <h1>QUI EST-CE ? (FRANCE EDITION)</h1>
-                    <p class="phase-subtitle">Affrontement à deux joueurs</p>
+                    <p class="phase-subtitle">Choisissez votre mode de jeu</p>
                     <div class="panel">
-                        <p style="font-size:1.1rem; color:var(--text-sub); line-height:1.5; margin-bottom:15px;">
-                            Le jeu va attribuer secrètement une personnalité française à chaque joueur. Préparez vos meilleures questions !
+                        <p style="font-size:1.1rem; color:var(--text-sub); line-height:1.5; margin-bottom:20px;">
+                            Sélectionnez le type de partie que vous souhaitez lancer :
                         </p>
-                        <button class="btn btn-primary" onclick="preparerDuel()">Lancer le Duel ›</button>
+                        <button class="btn btn-primary" style="margin-bottom:10px;" onclick="choisirMode(1)">1. Un seul tableau (Solo / Hasard) ›</button>
+                        <button class="btn btn-ghost" onclick="choisirMode(2)">2. Deux tableaux collés (Duel) ›</button>
+                    </div>
+                `;
+            }
+            else if (state.screen === "solo_jeu") {
+                let cartesSolo = state.personnagesSolo.map((p, index) => `
+                    <div class="carte-perso ${p.elimine ? 'elimine' : ''}" onclick="toggleEliminer(1, ${index})">
+                        <img src="${p.img}" alt="${p.nom}">
+                        <span>${p.nom}</span>
+                    </div>
+                `).join("");
+
+                app.innerHTML = `
+                    <h1>MODE SOLO 🎯</h1>
+                    <p class="phase-subtitle">Un personnage secret a été tiré au sort</p>
+                    
+                    <div class="panel" style="margin-bottom:20px;">
+                        <p style="font-size:1rem; color:var(--text-sub); margin-bottom:5px;">Le personnage mystère à deviner :</p>
+                        <div class="secret-reveal-card" style="margin:5px 0 0 0;">
+                            🎯 ${state.mystereSolo.nom}
+                        </div>
+                    </div>
+
+                    <div class="joueur-column" style="max-width:800px; margin:0 auto;">
+                        <div class="joueur-title">VOTRE GRILLE DE JEU</div>
+                        <div class="grid-persos">
+                            ${cartesSolo}
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px; text-align:center;">
+                        <button class="btn btn-ghost" style="max-width:300px; margin:0 auto;" onclick="state.screen='setup'; render();">‹ Changer de mode</button>
                     </div>
                 `;
             }
@@ -336,8 +389,9 @@
                         </div>
                     </div>
 
-                    <div style="margin-top:20px; text-align:center;">
-                        <button class="btn btn-ghost" style="max-width:300px; margin:0 auto;" onclick="preparerDuel()">Recommencer un Duel ⟳</button>
+                    <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                        <button class="btn btn-ghost" style="max-width:250px;" onclick="preparerDuel()">Recommencer ⟳</button>
+                        <button class="btn btn-ghost" style="max-width:250px;" onclick="state.screen='setup'; render();">Changer de mode ‹</button>
                     </div>
                 `;
             }
