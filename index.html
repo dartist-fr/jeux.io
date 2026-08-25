@@ -37,7 +37,7 @@
             background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
             color: var(--text-main);
             min-height: 100vh;
-            padding: 24px 12px 60px; /* Marges latérales réduites sur mobile pour gagner de la place */
+            padding: 24px 12px 60px;
             position: relative;
             overflow-x: hidden;
         }
@@ -130,7 +130,6 @@
             scroll-margin-top: 30px;
         }
 
-        /* MODIFICATION MOBILE : minmax(150px, 1fr) permet d'afficher 2 cartes par ligne sur les petits écrans */
         .grid-jeux {
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -317,6 +316,14 @@
             <div class="icone">💀</div>
             <div class="titre-jeu">Qui est-ce ?</div>
             <div class="info-jeu">Édition personnalités connues et humour noir pour éliminer les suspects.</div>
+            <span class="btn-jouer">Jouer &#9654;</span>
+        </a>
+
+        <!-- NOUVELLE CARTE POUR LE TU PRÉFÈRES -->
+        <a href="tu-preferes/" class="carte-jeu yellow" data-tag="HARDCORE">
+            <div class="icone">⚖️</div>
+            <div class="titre-jeu">Tu Préfères ?</div>
+            <div class="info-jeu">Dilemmes cornéliens, modes soft, normal et hardcore sans filtre !</div>
             <span class="btn-jouer">Jouer &#9654;</span>
         </a>
     </main>
