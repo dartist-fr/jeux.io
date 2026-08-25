@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Qui est-ce ? (Version Grinçante) — Salle d'Arcade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0616;
+            --card-bg: #140a26;
+            --grid-line: rgba(255, 46, 136, 0.10);
+            --border-color: rgba(255, 46, 136, 0.35);
+            --text-main: #f3e9ff;
+            --text-sub: #9d8bc4;
+            --accent: #ff2e88;
+            --neon-green: #4dffa6;
+            --neon-cyan: #22e6ff;
+            --font-display: 'Press Start 2P', monospace;
+            --font-body: 'VT323', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { background: var(--bg-color); }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+                radial-gradient(circle at 50% 0%, rgba(255, 46, 136, 0.15) 0%, transparent 55%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px 16px 60px;
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        body::after {
+            content: "";
+            position: fixed; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px);
+            z-index: 100; mix-blend-mode: multiply;
+        }
+
+        .top-bar { max-width: 900px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-back, .btn-fs {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-display); font-size: 0.5rem;
+            color: var(--accent); text-decoration: none;
+            padding: 10px 14px; border: 2px solid var(--accent);
+            background: rgba(255, 46, 136, 0.06); cursor: pointer;
+            box-shadow: 0 0 0 2px var(--bg-color), 4px 4px 0 rgba(255, 46, 136, 0.35);
+        }
+
+        .container {
+            max-width: 900px; margin: 0 auto;
+            background: var(--card-bg); border: 2px solid var(--accent);
+            padding: 24px 20px;
+            box-shadow: 0 0 0 4px var(--bg-color), 8px 8px 0 rgba(0,0,0,0.6), 0 0 30px rgba(255,46,136,0.25);
+            position: relative; z-index: 10;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: var(--font-display); font-size: 1.1rem; line-height: 1.4;
+            color: var(--accent); text-shadow: 0 0 8px rgba(255,46,136,0.9), 3px 3px 0 #4a0d2b;
+            margin-bottom: 8px;
+        }
+
+        .phase-subtitle { font-size: 1.15rem; color: var(--text-sub); margin-bottom: 20px; }
+
+        .panel { background: rgba(0,0,0,0.35); border: 2px solid var(--border-color); padding: 18px; margin-bottom: 16px; text-align: center; }
+
+        /* Grille des personnages style plateau de jeu avec vraies photos */
+        .grille-persos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .carte-perso {
+            background: #07040f;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 150px;
+            position: relative;
+        }
+
+        .carte-perso:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .carte-perso.eliminee {
+            opacity: 0.3;
+            filter: grayscale(1);
+            border-color: #333;
+            background: #030207;
+        }
+        .carte-perso.eliminee .nom {
+            text-decoration: line-through;
+        }
+
+        /* Conteneur de la photo portrait */
+        .avatar-container {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #110822;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carte-perso .nom {
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            color: #fff;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .carte-perso .tag {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            line-height: 1.1;
+        }
+
+        .btn-action {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 100%; max-width: 300px; padding: 14px; font-family: var(--font-display); font-size: 0.6rem;
+            background: var(--accent); color: #000; border: none; cursor: pointer;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.6); margin: 10px auto; font-weight: bold;
+        }
+        .btn-secondary { background: rgba(255, 46, 136, 0.1); border: 2px solid var(--accent); color: var(--text-main); }
+
+        .info-secret {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            color: var(--neon-cyan);
+            background: rgba(34, 230, 255, 0.05);
+            border: 1px dashed var(--neon-cyan);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="../" class="btn-back">&lsaquo; HUB</a>
+        <button type="button" id="btn-fullscreen" class="btn-fs">PLEIN ÉCRAN</button>
+    </div>
+
+    <main class="container" id="app"></main>
+
+    <script>
+        // Liste de personnalités avec des liens directs vers de vrais portraits officiels / Wikimedia
+        const PERSONNAGES = [
+            { nom: "Pape François", desc: "Le boss du Vatican", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Pope_Francis_2013_%28cropped%29.jpg/220px-Pope_Francis_2013_%28cropped%29.jpg" },
+            { nom: "Vladimir Poutine", desc: "Torse nu l'hiver", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Vladimir_Putin_%282024-05-07%29_page1_%28cropped%29.jpg/220px-Vladimir_Putin_%282024-05-07%29_page1_%28cropped%29.jpg" },
+            { nom: "Kim Jong-un", desc: "Coupe iconique", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Kim_Jong_Un_in_2018_%28cropped%29.jpg/220px-Kim_Jong_Un_in_2018_%28cropped%29.jpg" },
+            { nom: "Donald Trump", desc: "Bronzage orange", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/220px-Donald_Trump_official_portrait.jpg" },
+            { nom: "Emmanuel Macron", desc: "Fan de couteaux-tirs", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Emmanuel_Macron_2022_%28cropped%29.jpg/220px-Emmanuel_Macron_2022_%28cropped%29.jpg" },
+            { nom: "Mick Jagger", desc: "Survivra à tout", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mick_Jagger_2017.jpg/220px-Mick_Jagger_2017.jpg" },
+            { nom: "Kanye West", desc: "Génie incompris", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kanye_West_2009.jpg/220px-Kanye_West_2009.jpg" },
+            { nom: "Saddam Hussein", desc: "Fan de cache-cache", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Saddam_Hussein_passport.jpg/220px-Saddam_Hussein_passport.jpg" },
+            { nom: "Gérard Depardieu", desc: "Bons crus russes", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/G%C3%A9rard_Depardieu_Cannes_2016.jpg/220px-G%C3%A9rard_Depardieu_Cannes_2016.jpg" },
+            { nom: "Johnny Hallyday", desc: "Toujours là", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Johnny_Hallyday_2009.jpg/220px-Johnny_Hallyday_2009.jpg" },
+            { nom: "Balkany", desc: "Résident en cellule", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Patrick_Balkany_2013.jpg/220px-Patrick_Balkany_2013.jpg" },
+            { nom: "Karl Lagerfeld", desc: "Lunettes indoor", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Karl_Lagerfeld_2012.jpg/220px-Karl_Lagerfeld_2012.jpg" },
+            { nom: "Michael Jackson", desc: "Maître du moonwalk", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Michael_Jackson_in_1988.jpg/220px-Michael_Jackson_in_1988.jpg" },
+            { nom: "Elizabeth II", desc: "Immortelle (ex)", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Queen_Elizabeth_II_in_March_2015.jpg/220px-Queen_Elizabeth_II_in_March_2015.jpg" },
+            { nom: "Dieudonné", desc: "Polémique pro", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Dieudonn%C3%A9_M'bala_M'bala_2012.jpg/220px-Dieudonn%C3%A9_M'bala_M'bala_2012.jpg" },
+            { nom: "Staline", desc: "Moustachu autoritaire", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stalin_1943.jpg/220px-Stalin_1943.jpg" }
+        ];
+
+        let state = {
+            screen: "setup", 
+            personnagesActifs: []
+        };
+
+        function demarrerPartie() {
+            state.personnagesActifs = PERSONNAGES.map(p => ({ ...p, elimine: false }));
+            state.screen = "jeu";
+            render();
+        }
+
+        function basculerElimination(index) {
+            state.personnagesActifs[index].elimine = !state.personnagesActifs[index].elimine;
+            render();
+        }
+
+        function render() {
+            const app = document.getElementById("app");
+
+            if (state.screen === "setup") {
+                app.innerHTML = `
+                    <h1>QUI EST-CE ?</h1>
+                    <p class="phase-subtitle">Édition Spéciale : Personnalités & Humour Noir</p>
+                    <div class="panel">
+                        <p style="font-size:1.1rem; color:var(--text-sub); margin-bottom:20px; line-height:1.4;">
+                            Règle : Chaque joueur choisit secrètement une personnalité de la grille. À tour de rôle, posez des questions fermées (ex: <em>"Est-ce qu'il/elle est déjà allé(e) en prison ?"</em>) pour éliminer les suspects en cliquant sur leurs cartes !
+                        </p>
+                        <button class="btn-action" onclick="demarrerPartie()">Lancer la partie 🚀</button>
+                    </div>
+                `;
+            }
+            else if (state.screen === "jeu") {
+                let grilleHtml = state.personnagesActifs.map((p, index) => {
+                    return `
+                        <div class="carte-perso ${p.elimine ? 'eliminee' : ''}" onclick="basculerElimination(${index})">
+                            <div class="avatar-container">
+                                <img src="${p.img}" alt="${p.nom}">
+                            </div>
+                            <div class="nom">${p.nom}</div>
+                            <div class="tag">${p.desc}</div>
+                        </div>
+                    `;
+                }).join("");
+
+                app.innerHTML = `
+                    <h1>PLATEAU DE JEU</h1>
+                    <p class="phase-subtitle">Clique sur une carte pour l'éliminer / la griser</p>
+                    
+                    <div class="info-secret">
+                        💡 Astuce : Pose tes questions à l'oral à tes potes, et éliminez les suspects au fur et à mesure !
+                    </div>
+
+                    <div class="grille-persos">
+                        ${grilleHtml}
+                    </div>
+
+                    <button class="btn-action btn-secondary" onclick="demarrerPartie()">Réinitialiser le plateau ⟳</button>
+                `;
+            }
+        }
+
+        document.getElementById('btn-fullscreen').addEventListener('click', function () {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                this.textContent = "QUITTER";
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                this.textContent = "PLEIN ÉCRAN";
+            }
+        });
+
+        render();
+    </script>
+</body>
+</html>
