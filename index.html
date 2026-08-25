@@ -37,7 +37,7 @@
             background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
             color: var(--text-main);
             min-height: 100vh;
-            padding: 24px 20px 60px;
+            padding: 24px 12px 60px; /* Marges latérales réduites sur mobile pour gagner de la place */
             position: relative;
             overflow-x: hidden;
         }
@@ -80,7 +80,6 @@
 
         .description { color: var(--text-muted); font-size: 1.35rem; margin-top: 18px; }
 
-        /* Sommaire dynamique / Barre de navigation interne */
         .sommaire {
             max-width: 600px;
             margin: 0 auto 40px;
@@ -118,7 +117,6 @@
             color: #000;
         }
 
-        /* Titres de sections */
         .section-titre {
             font-family: var(--font-display);
             font-size: 0.8rem;
@@ -129,27 +127,31 @@
             border-left: 4px solid var(--neon-green);
             padding-left: 12px;
             text-transform: uppercase;
-            scroll-margin-top: 30px; /* Évite que le titre soit caché par le haut de l'écran lors du saut */
+            scroll-margin-top: 30px;
         }
 
+        /* MODIFICATION MOBILE : minmax(150px, 1fr) permet d'afficher 2 cartes par ligne sur les petits écrans */
         .grid-jeux {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 28px; max-width: 1100px; margin: 0 auto;
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px; 
+            max-width: 1100px; 
+            margin: 0 auto;
         }
 
         .carte-jeu {
             --glow: var(--neon-cyan);
             position: relative; background: var(--bg-panel); border: 2px solid var(--glow);
-            padding: 30px 26px 26px; text-decoration: none; color: inherit;
+            padding: 18px 12px 14px; text-decoration: none; color: inherit;
             display: flex; flex-direction: column; align-items: center; text-align: center;
-            box-shadow: 0 0 0 4px var(--bg-body), 8px 8px 0 rgba(0,0,0,0.5);
+            box-shadow: 0 0 0 3px var(--bg-body), 5px 5px 0 rgba(0,0,0,0.5);
             transition: transform 0.15s steps(3), box-shadow 0.15s;
         }
         .carte-jeu::before {
-            content: attr(data-tag); position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
-            font-family: var(--font-display); font-size: 0.5rem; padding: 5px 10px; background: var(--glow); color: #000;
+            content: attr(data-tag); position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+            font-family: var(--font-display); font-size: 0.4rem; padding: 3px 8px; background: var(--glow); color: #000;
         }
-        .carte-jeu:hover { transform: translate(-3px, -6px); box-shadow: 0 0 0 4px var(--bg-body), 11px 14px 0 rgba(0,0,0,0.6), 0 0 26px var(--glow); }
+        .carte-jeu:hover { transform: translate(-2px, -4px); box-shadow: 0 0 0 3px var(--bg-body), 8px 10px 0 rgba(0,0,0,0.6), 0 0 20px var(--glow); }
 
         .carte-jeu.pink    { --glow: var(--neon-pink); }
         .carte-jeu.cyan    { --glow: var(--neon-cyan); }
@@ -158,20 +160,19 @@
         .carte-jeu.green   { --glow: var(--neon-green); }
 
         .icone {
-            font-size: 3.4rem; width: 92px; height: 92px; display: grid; place-items: center;
-            margin-bottom: 20px; border: 2px solid var(--glow); background: rgba(0,0,0,0.35);
-            filter: drop-shadow(0 0 8px var(--glow));
+            font-size: 2.2rem; width: 60px; height: 60px; display: grid; place-items: center;
+            margin-bottom: 12px; border: 2px solid var(--glow); background: rgba(0,0,0,0.35);
+            filter: drop-shadow(0 0 6px var(--glow));
         }
 
-        .titre-jeu { font-family: var(--font-display); font-size: 0.95rem; color: #fff; text-shadow: 0 0 8px var(--glow); margin-bottom: 14px; }
-        .info-jeu { font-size: 1.2rem; color: var(--text-muted); line-height: 1.35; flex-grow: 1; margin-bottom: 24px; }
+        .titre-jeu { font-family: var(--font-display); font-size: 0.75rem; color: #fff; text-shadow: 0 0 6px var(--glow); margin-bottom: 8px; }
+        .info-jeu { font-size: 1rem; color: var(--text-muted); line-height: 1.25; flex-grow: 1; margin-bottom: 16px; }
 
         .btn-jouer {
-            font-family: var(--font-display); font-size: 0.62rem; color: #000; background: var(--glow);
-            padding: 12px 20px; box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+            font-family: var(--font-display); font-size: 0.5rem; color: #000; background: var(--glow);
+            padding: 8px 14px; box-shadow: 2px 2px 0 rgba(0,0,0,0.6);
         }
 
-        /* Bouton Retour en haut (Flèche) */
         #btn-haut {
             position: fixed;
             bottom: 25px;
@@ -196,9 +197,7 @@
             opacity: 1;
             visibility: visible;
         }
-        #btn-haut:hover {
-            transform: translateY(-3px);
-        }
+        #btn-haut:hover { transform: translateY(-3px); }
 
         footer {
             max-width: 1100px;
@@ -221,6 +220,12 @@
 
         @media (min-width: 640px) {
             footer { flex-direction: row; justify-content: space-between; }
+            .grid-jeux { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+            .carte-jeu { padding: 30px 26px 26px; }
+            .icone { font-size: 3.4rem; width: 92px; height: 92px; margin-bottom: 20px; }
+            .titre-jeu { font-size: 0.95rem; margin-bottom: 14px; }
+            .info-jeu { font-size: 1.2rem; margin-bottom: 24px; }
+            .btn-jouer { font-size: 0.62rem; padding: 12px 20px; }
         }
     </style>
 </head>
@@ -242,7 +247,6 @@
         <span class="blink">&#9654; INSERT COIN</span>
     </header>
 
-    <!-- SOMMAIRE INTERNE -->
     <nav class="sommaire">
         <div class="sommaire-titre">Sommaire des Bornes</div>
         <div class="sommaire-liens">
@@ -251,7 +255,6 @@
         </div>
     </nav>
 
-    <!-- SECTION : JEUX MULTIJOUEURS / AMBIANCE -->
     <h2 id="multijoueurs" class="section-titre">🕹️ Jeux Multijoueurs & Ambiance</h2>
     <main class="grid-jeux">
         <a href="undercover/" class="carte-jeu pink" data-tag="PARTY">
@@ -318,7 +321,6 @@
         </a>
     </main>
 
-    <!-- SECTION : JEUX SOLO -->
     <h2 id="solo" class="section-titre">⚡ Borne Solo (Tests & Entraînement)</h2>
     <main class="grid-jeux">
         <a href="pendu/" class="carte-jeu green" data-tag="SOLO">
@@ -336,7 +338,6 @@
         </a>
     </main>
 
-    <!-- BOUTON RETOUR EN HAUT -->
     <button id="btn-haut" onclick="retourHaut()" title="Retour en haut">▲</button>
 
     <footer>
@@ -345,7 +346,6 @@
     </footer>
 
     <script>
-        // Gestion du mode plein écran
         const btn = document.getElementById('btn-fullscreen');
         const label = btn.querySelector('.fs-label');
         btn.addEventListener('click', () => {
@@ -358,7 +358,6 @@
             }
         });
 
-        // Apparition / Disparition du bouton "Retour en haut" selon le défilement
         const btnHaut = document.getElementById('btn-haut');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -368,12 +367,8 @@
             }
         });
 
-        // Fonction pour remonter en haut de la page en douceur
         function retourHaut() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
